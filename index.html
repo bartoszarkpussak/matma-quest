@@ -1,0 +1,760 @@
+<!doctype html>
+<html lang="pl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Matma Quest">
+<meta name="theme-color" content="#2b1055">
+<title>Matma Quest Amelii</title>
+<style>
+:root{
+  --ink:#22183a; --muted:#6b6385; --ok:#16a34a; --bad:#e11d48; --gold:#f6b40e;
+  --wc:#8b5cf6; --wc2:#6d28d9;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;height:100%}
+body{
+  font-family:ui-rounded,"SF Pro Rounded","Nunito",-apple-system,"Segoe UI",system-ui,sans-serif;
+  color:var(--ink);
+  background:#2b1055 linear-gradient(165deg,#2b1055 0%,#5b2a86 45%,#3d6fd1 100%) fixed;
+  min-height:100dvh; overscroll-behavior:none;
+  -webkit-user-select:none; user-select:none;
+}
+button{font:inherit;color:inherit;cursor:pointer}
+.sky{position:fixed;inset:0;pointer-events:none;overflow:hidden;z-index:0}
+.sky i{position:absolute;width:3px;height:3px;border-radius:50%;background:#fff;opacity:.6;animation:tw 3s infinite ease-in-out}
+@keyframes tw{50%{opacity:.1}}
+#app{position:relative;z-index:1}
+
+/* ---------- home ---------- */
+.home{max-width:540px;margin:0 auto;padding:calc(env(safe-area-inset-top) + 10px) 16px calc(env(safe-area-inset-bottom) + 24px)}
+.top{display:flex;align-items:center;gap:8px;color:#fff}
+.av{width:46px;height:46px;border-radius:15px;background:rgba(255,255,255,.18);display:grid;place-items:center;font-size:28px;border:2px solid rgba(255,255,255,.4);flex:none}
+.hello{font-weight:900;font-size:18px;flex:1;line-height:1.1}
+.hello small{display:block;font-weight:700;font-size:12px;opacity:.8}
+.pill{background:rgba(0,0,0,.28);border-radius:999px;padding:7px 11px;font-weight:900;font-size:15px;white-space:nowrap}
+.iconbtn{background:rgba(255,255,255,.16);border:0;color:#fff;font-size:20px;width:42px;height:42px;border-radius:13px;flex:none}
+.logo{color:#fff;text-align:center;margin:18px 0 4px}
+.logo h1{margin:0;font-size:34px;font-weight:900;letter-spacing:-.5px;text-shadow:0 4px 0 rgba(0,0,0,.25)}
+.logo h1 span{color:var(--gold)}
+.logo p{margin:4px 0 0;font-weight:700;opacity:.85;font-size:14px}
+.bubble{display:flex;gap:10px;align-items:flex-start;background:#fff;border-radius:20px;padding:12px 14px;margin:14px 0 4px;font-weight:700;box-shadow:0 6px 0 rgba(0,0,0,.18);font-size:15px;line-height:1.35}
+.bubble .m{font-size:32px;line-height:1}
+.bubble b{color:#7c3aed}
+.worlds{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:14px}
+.wcard{border:0;border-radius:22px;padding:14px 12px 12px;color:#fff;text-align:left;
+  background:linear-gradient(150deg,var(--wc),var(--wc2));box-shadow:0 6px 0 rgba(0,0,0,.28);position:relative;overflow:hidden;transition:transform .08s}
+.wcard:active{transform:translateY(4px);box-shadow:0 2px 0 rgba(0,0,0,.28)}
+.wcard .we{font-size:40px;line-height:1}
+.wcard .wn{font-weight:900;font-size:17px;line-height:1.1;margin-top:6px}
+.wcard .wt{font-size:12.5px;font-weight:700;opacity:.92;margin-top:3px}
+.wcard .wst{margin-top:8px;font-size:17px;letter-spacing:1px}
+.wcard .wst .off{opacity:.35;filter:grayscale(1)}
+.wcard.boss{grid-column:1/-1;display:flex;align-items:center;gap:14px}
+.wcard.boss .we{font-size:50px}
+.wcard.locked{filter:saturate(.35) brightness(.8)}
+.wcard .lock{position:absolute;right:12px;top:10px;font-size:20px}
+.foot{color:#fff;opacity:.75;text-align:center;font-size:12.5px;font-weight:700;margin-top:18px;line-height:1.4}
+.streak{display:inline-block;margin-top:8px;background:rgba(255,255,255,.18);color:#fff;border-radius:999px;padding:5px 12px;font-weight:800;font-size:13px}
+
+/* ---------- lesson ---------- */
+.lesson{max-width:540px;margin:0 auto;padding:calc(env(safe-area-inset-top) + 10px) 16px calc(env(safe-area-inset-bottom) + 24px)}
+.lhead{border-radius:24px;padding:18px;color:#fff;background:linear-gradient(150deg,var(--wc),var(--wc2));box-shadow:0 6px 0 rgba(0,0,0,.28);margin-top:10px}
+.lhead .we{font-size:52px;line-height:1}
+.lhead h2{margin:6px 0 0;font-size:26px;font-weight:900}
+.lhead p{margin:4px 0 0;font-weight:700;opacity:.9}
+.card{background:#fff;border-radius:22px;padding:16px;box-shadow:0 7px 0 rgba(0,0,0,.18)}
+.lcard{margin-top:14px;font-size:16px;line-height:1.5;font-weight:600}
+.lcard h3{margin:14px 0 6px;font-size:18px;font-weight:900;color:var(--wc2)}
+.lcard h3:first-child{margin-top:0}
+.ex{background:#f5f2ff;border-radius:14px;padding:10px 12px;margin:8px 0;font-weight:800;font-size:18px}
+.trap{background:#fff1f3;border:2px dashed #fda4af;border-radius:14px;padding:10px 12px;margin:10px 0;font-weight:700}
+.trap .x{color:var(--bad)} .trap .v{color:var(--ok)}
+.rule{background:#fff8db;border-radius:14px;padding:10px 12px;margin:10px 0;font-weight:800}
+.bigbtn{display:block;width:100%;border:0;border-radius:20px;padding:17px;font-size:21px;font-weight:900;margin-top:16px;background:var(--gold);color:#3b2600;box-shadow:0 6px 0 #b8860b}
+.bigbtn:active{transform:translateY(4px);box-shadow:0 2px 0 #b8860b}
+.back{background:none;border:0;color:#fff;font-weight:800;font-size:16px;padding:6px 0}
+
+/* ---------- play ---------- */
+.play{display:flex;flex-direction:column;height:100dvh;max-width:540px;margin:0 auto}
+.ptop{display:flex;align-items:center;gap:8px;color:#fff;padding:calc(env(safe-area-inset-top) + 8px) 12px 0}
+.ptitle{flex:1;font-weight:900;font-size:17px;text-align:center;line-height:1.1}
+.track{display:flex;align-items:flex-end;gap:4px;padding:30px 14px 8px}
+.blk{flex:1;height:13px;border-radius:5px;background:rgba(255,255,255,.22);position:relative;box-shadow:0 3px 0 rgba(0,0,0,.2)}
+.blk.done{background:var(--gold)}
+.blk.miss{background:#fb7185}
+.blk.cur{background:#fff}
+.blk .me{position:absolute;bottom:9px;left:50%;transform:translateX(-50%);font-size:24px;line-height:1;animation:hop .45s ease-out}
+.flag{font-size:20px;margin-left:2px;line-height:1}
+@keyframes hop{0%{transform:translate(-50%,0)}40%{transform:translate(-50%,-14px)}100%{transform:translate(-50%,0)}}
+.scroll{flex:1;overflow-y:auto;padding:4px 12px 14px;-webkit-overflow-scrolling:touch}
+.qnum{display:flex;justify-content:space-between;align-items:center;font-size:13px;font-weight:900;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px}
+.tag{background:#f1ebff;color:#6d28d9;border-radius:999px;padding:3px 9px;text-transform:none;letter-spacing:0}
+.qtext{font-size:18.5px;font-weight:700;line-height:1.45}
+.qtext .big{display:block;font-size:31px;font-weight:900;text-align:center;margin:8px 0 2px;color:var(--wc2)}
+sup{font-size:.6em}
+.ptable{border-collapse:collapse;margin:8px 0;font-size:16px;width:100%}
+.ptable td,.ptable th{border:2px solid #e7e2f5;padding:6px 8px;text-align:left}
+.ptable th{background:#f5f2ff}
+.frow{display:flex;align-items:center;gap:8px;margin-top:10px}
+.flabel{font-weight:800;font-size:16px;flex:1;line-height:1.25}
+.field{min-width:112px;height:50px;border:3px solid #d9d3ee;border-radius:15px;display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:900;background:#f7f5ff;padding:0 8px;flex:none}
+.field.active{border-color:var(--wc);box-shadow:0 0 0 4px rgba(139,92,246,.22);background:#fff}
+.field.active .fv:empty::after,.field.active .fv::after{content:"";display:inline-block;width:2px;height:24px;background:var(--wc);margin-left:2px;vertical-align:-3px;animation:blink 1s infinite}
+@keyframes blink{50%{opacity:0}}
+.field.ok{border-color:var(--ok);background:#ecfdf3}
+.field.bad{border-color:var(--bad);background:#fff1f3;animation:shake .4s}
+.unit{font-weight:800;color:var(--muted);flex:none}
+.clabel{font-weight:900;margin-top:14px;font-size:16px}
+.choices{display:grid;gap:8px;margin-top:8px}
+.choices.two{grid-template-columns:1fr 1fr}
+.choice{border:3px solid #e3def3;background:#faf8ff;border-radius:16px;padding:13px 12px;font-weight:900;font-size:18px;text-align:center;box-shadow:0 4px 0 #e3def3}
+.choice.sel{border-color:var(--wc);background:#f1ebff;box-shadow:0 4px 0 var(--wc)}
+.choice.ok{border-color:var(--ok);background:#ecfdf3;box-shadow:0 4px 0 var(--ok)}
+.choice.bad{border-color:var(--bad);background:#fff1f3;animation:shake .4s}
+@keyframes shake{20%,60%{transform:translateX(-6px)}40%,80%{transform:translateX(6px)}}
+.fb{margin-top:12px;border-radius:16px;padding:0;font-weight:800;font-size:16px;line-height:1.4}
+.fb:empty{display:none}
+.fb.ok{background:#ecfdf3;border:2px solid #86efac;padding:11px 13px;color:#14532d}
+.fb.bad{background:#fff1f3;border:2px solid #fda4af;padding:11px 13px;color:#881337}
+.fb.warn{background:#fff8db;border:2px solid #fcd34d;padding:11px 13px;color:#713f12}
+.fb .cheer{font-size:22px;font-weight:900;display:block}
+.fb .sol{display:block;margin-top:6px;font-weight:700;color:#14532d}
+.linkbtn{background:none;border:0;padding:0;margin-top:6px;font-weight:900;color:#7c3aed;text-decoration:underline;font-size:15px;display:block}
+.hint{margin-top:10px;background:#fff8db;border-radius:14px;padding:10px 12px;font-weight:700;font-size:15.5px;line-height:1.45;animation:pop .25s}
+.hint .hn{font-weight:900;color:#a16207}
+.hint.solution{background:#eef6ff;border:2px solid #93c5fd}
+@keyframes pop{from{transform:scale(.95);opacity:0}}
+.dots{display:grid;gap:3px;margin:8px auto 4px;max-width:200px}
+.dots i{aspect-ratio:1;border-radius:50%;background:var(--wc)}
+.mults{display:flex;flex-wrap:wrap;gap:5px;margin-top:6px}
+.mults span{background:#fff;border:2px solid #f0e3a6;border-radius:10px;padding:3px 7px;font-weight:800;font-size:14px}
+.mults span.best{background:#dcfce7;border-color:#22c55e}
+.mults span.over{background:#ffe4e6;border-color:#fb7185;text-decoration:line-through}
+
+.wbox{margin-top:12px;background:#f5f2ff;border-radius:16px;padding:12px;text-align:center}
+.wlabel{font-weight:800;font-size:14px;color:var(--muted);margin-bottom:8px}
+.zrow{display:flex;justify-content:center;align-items:center;gap:10px;font-size:34px;font-weight:900}
+.dg{display:inline-block;transition:all .3s}
+.dg.frozen{color:#7dd3fc;text-decoration:line-through;text-decoration-thickness:4px;text-decoration-color:#0284c7;transform:scale(.85)}
+.znote{margin-top:8px;font-weight:800}
+.mini{border:0;border-radius:12px;padding:9px 14px;font-weight:900;font-size:15px;background:var(--wc);color:#fff;margin-top:10px;box-shadow:0 4px 0 rgba(0,0,0,.2)}
+.mini.ghost{background:#e9e3fb;color:var(--ink);box-shadow:0 4px 0 #d6cdf5;margin-left:6px}
+.chips{display:flex;justify-content:center;align-items:center;flex-wrap:wrap;gap:6px}
+.chip{border:3px solid #d9d3ee;background:#fff;border-radius:14px;min-width:58px;padding:9px 10px;font-weight:900;font-size:24px;box-shadow:0 4px 0 #d9d3ee}
+.chip.sel{border-color:var(--wc);background:#f1ebff;transform:translateY(-3px)}
+.chip.gold{background:linear-gradient(150deg,#fde68a,#f6b40e);border-color:#d39e00;box-shadow:0 4px 0 #b8860b}
+.chip.shake{animation:shake .4s}
+.chips .dot{font-weight:900;font-size:24px;color:var(--muted)}
+.wmsg{margin-top:8px;font-weight:800;font-size:14.5px;min-height:20px}
+
+.bottom{background:rgba(255,255,255,.96);border-radius:24px 24px 0 0;padding:10px 12px calc(env(safe-area-inset-bottom) + 10px);box-shadow:0 -6px 20px rgba(0,0,0,.15)}
+.actions{display:flex;gap:8px}
+.btn{border:0;border-radius:17px;font-weight:900;font-size:18px;padding:14px 10px;box-shadow:0 5px 0 rgba(0,0,0,.2)}
+.btn:active{transform:translateY(3px);box-shadow:0 2px 0 rgba(0,0,0,.2)}
+.btn:disabled{opacity:.45}
+.btn.go{flex:1.5;background:linear-gradient(150deg,var(--wc),var(--wc2));color:#fff}
+.btn.hb{flex:1;background:#fff1b8;color:#7a5600;font-size:15.5px;white-space:nowrap}
+.keypad{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin-top:9px}
+.key{border:0;border-radius:14px;background:#efeaff;font-size:25px;font-weight:900;height:48px;box-shadow:0 4px 0 #d6cdf5;color:var(--ink)}
+.key:active{transform:translateY(3px);box-shadow:0 1px 0 #d6cdf5}
+.key.fn{background:#e2e8f0;box-shadow:0 4px 0 #cbd5e1;font-size:21px}
+
+/* ---------- results / shop ---------- */
+.res{max-width:540px;margin:0 auto;padding:calc(env(safe-area-inset-top) + 30px) 16px 30px;text-align:center;color:#fff}
+.res .bigstars{font-size:56px;letter-spacing:6px;margin:10px 0}
+.res .bigstars span{display:inline-block;animation:starIn .5s both}
+.res .bigstars span:nth-child(2){animation-delay:.25s}
+.res .bigstars span:nth-child(3){animation-delay:.5s}
+.res .bigstars .off{opacity:.25;filter:grayscale(1)}
+@keyframes starIn{from{transform:scale(0) rotate(-90deg)}70%{transform:scale(1.3)}}
+.res h2{font-size:30px;margin:6px 0;font-weight:900}
+.res .card{color:var(--ink);text-align:left;margin-top:16px;font-weight:700;line-height:1.5}
+.res .row{display:flex;gap:10px;margin-top:4px}
+.res .row .bigbtn{flex:1}
+.bigbtn.alt{background:#fff;color:var(--ink);box-shadow:0 6px 0 #c4b5fd}
+.shopgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:14px}
+.sitem{border:0;background:#fff;border-radius:18px;padding:12px 6px;box-shadow:0 5px 0 rgba(0,0,0,.2);text-align:center}
+.sitem .e{font-size:40px;line-height:1.1}
+.sitem .p{font-weight:900;font-size:14px;margin-top:4px}
+.sitem.on{outline:4px solid var(--gold)}
+.sitem.no{opacity:.55}
+
+.toast{position:fixed;left:50%;bottom:calc(env(safe-area-inset-bottom) + 90px);transform:translateX(-50%);background:#22183a;color:#fff;padding:11px 16px;border-radius:14px;font-weight:800;font-size:15px;z-index:50;max-width:90vw;text-align:center;animation:pop .2s}
+.modal{position:fixed;inset:0;background:rgba(20,10,40,.6);z-index:40;display:flex;align-items:flex-end;justify-content:center}
+.modal .card{width:100%;max-width:540px;max-height:85dvh;overflow:auto;border-radius:24px 24px 0 0;padding:18px 16px calc(env(safe-area-inset-bottom) + 18px)}
+.conf{position:fixed;top:-40px;font-size:26px;z-index:60;pointer-events:none;animation:fall linear forwards}
+@keyframes fall{to{transform:translateY(110vh) rotate(540deg)}}
+.coinfly{position:fixed;z-index:60;font-weight:900;color:var(--gold);font-size:22px;pointer-events:none;animation:up 1s ease-out forwards;text-shadow:0 2px 0 rgba(0,0,0,.3)}
+@keyframes up{to{transform:translateY(-70px);opacity:0}}
+</style>
+</head>
+<body>
+<div class="sky" id="sky"></div>
+<div id="app"></div>
+
+<script>
+/* ================= narzędzia ================= */
+const R=(a,b)=>Math.floor(Math.random()*(b-a+1))+a;
+const pick=a=>a[Math.floor(Math.random()*a.length)];
+const shuffle=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
+const fmt=n=>Number(n).toLocaleString('pl-PL');
+const zer=n=>n===1?'zero':(n>=2&&n<=4?'zera':'zer');
+const P=(a,e)=>`${a}<sup>${e}</sup>`;
+function mc(correct,wrongs){const ch=shuffle([correct,...wrongs]);return {choices:ch,correct:ch.indexOf(correct)}}
+const $=id=>document.getElementById(id);
+
+/* ================= zapis postępów ================= */
+const KEY='matmaQuestAmelia_v1';
+const S={coins:0,avatar:'🦊',owned:['🦊'],stars:{},sound:true,solved:0,streak:0,lastDay:''};
+try{Object.assign(S,JSON.parse(localStorage.getItem(KEY)||'{}'))}catch(e){}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
+
+/* ================= dźwięki ================= */
+let AC=null;
+function tone(freqs,dur=.12,type='sine',vol=.18){
+  if(!S.sound)return;
+  try{
+    AC=AC||new (window.AudioContext||window.webkitAudioContext)();
+    const t=AC.currentTime;
+    freqs.forEach((f,i)=>{const o=AC.createOscillator(),g=AC.createGain();o.type=type;o.frequency.value=f;
+      g.gain.setValueAtTime(.0001,t+i*dur);g.gain.exponentialRampToValueAtTime(vol,t+i*dur+.02);g.gain.exponentialRampToValueAtTime(.0001,t+i*dur+dur);
+      o.connect(g);g.connect(AC.destination);o.start(t+i*dur);o.stop(t+i*dur+dur+.03)});
+  }catch(e){}
+}
+const sOk=()=>tone([660,880,1320],.11,'triangle');
+const sBad=()=>tone([330,220],.18,'sawtooth',.08);
+const sTap=()=>tone([520],.05,'sine',.06);
+const sMagic=()=>tone([1047,1319,1568,2093],.07,'sine',.12);
+const sWin=()=>tone([523,659,784,1047,784,1047],.13,'triangle');
+
+/* ================= efekty ================= */
+function confetti(set=['⭐','✨','💎','🎉','💜','❄️']){
+  for(let i=0;i<24;i++){const s=document.createElement('div');s.className='conf';s.textContent=pick(set);
+    s.style.left=R(0,95)+'vw';s.style.animationDuration=(R(14,26)/10)+'s';s.style.animationDelay=(R(0,5)/10)+'s';
+    document.body.appendChild(s);setTimeout(()=>s.remove(),3500)}
+}
+function coinFly(n,el){if(!n)return;const r=(el||document.body).getBoundingClientRect();const c=document.createElement('div');c.className='coinfly';c.textContent='+'+n+' 💎';
+  c.style.left=(r.left+r.width/2-30)+'px';c.style.top=(r.top-10)+'px';document.body.appendChild(c);setTimeout(()=>c.remove(),1000)}
+let toastT;
+function toast(msg){document.querySelectorAll('.toast').forEach(t=>t.remove());const t=document.createElement('div');t.className='toast';t.innerHTML=msg;document.body.appendChild(t);clearTimeout(toastT);toastT=setTimeout(()=>t.remove(),2600)}
+function modal(html){const m=document.createElement('div');m.className='modal';m.innerHTML=`<div class="card">${html}<button class="bigbtn" onclick="this.closest('.modal').remove()">Wracam do gry 👍</button></div>`;
+  m.onclick=e=>{if(e.target===m)m.remove()};document.body.appendChild(m)}
+(function stars(){const sky=$('sky');for(let i=0;i<40;i++){const s=document.createElement('i');s.style.left=R(0,100)+'%';s.style.top=R(0,100)+'%';s.style.animationDelay=(R(0,30)/10)+'s';sky.appendChild(s)}})();
+
+/* ================= podpowiedzi wizualne ================= */
+function dotGrid(a){return `<div class="dots" style="grid-template-columns:repeat(${a},1fr)">${'<i></i>'.repeat(a*a)}</div><div style="text-align:center">${a} rzędów po ${a} kropek = <b>${a*a}</b></div>`}
+function multTable(b,a){let h='<div class="mults">';for(let k=1;k<=13;k++){const v=b*k;const cls=v>a?'over':(v<=a&&v+b>a?'best':'');h+=`<span class="${cls}">${b}·${k}=${v}</span>`;if(v>a)break}return h+'</div>'}
+
+/* ================= GENERATORY ZADAŃ ================= */
+
+// 🏰 Potęgi
+function genPot(){
+  const t=Math.random();
+  if(t<.35){
+    const a=R(2,12);
+    return {key:'p2'+a,html:`Oblicz w pamięci:<span class="big">${P(a,2)} = ?</span>`,
+      fields:[{label:`${P(a,2)} =`,ans:a*a}],
+      hints:[`Mała dwójka u góry znaczy: napisz <b>${a}</b> dwa razy i pomnóż. To NIE jest mnożenie przez 2!`,
+        `${P(a,2)} = ${a} · ${a}`,
+        a<=10?dotGrid(a):`${a} · ${a} = ${a}·10 + ${a}·${a-10} = ${a*10} + ${a*(a-10)}`],
+      trap:v=>v[0]===a*a?null:v[0]===2*a?`Ups! ${2*a} to ${a} · 2. A ${P(a,2)} to ${a} · ${a} — liczba razy ona sama! 😉`:(v[0]===a+2?`To było dodawanie. ${P(a,2)} = ${a} · ${a}`:null),
+      solution:`${P(a,2)} = ${a} · ${a} = <b>${a*a}</b>`};
+  }
+  if(t<.55){
+    const a=pick([2,3,4,5,10]);
+    return {key:'p3'+a,html:`Oblicz w pamięci:<span class="big">${P(a,3)} = ?</span>`,
+      fields:[{label:`${P(a,3)} =`,ans:a**3}],
+      hints:[`Trójka u góry: napisz <b>${a}</b> trzy razy i pomnóż.`,`${P(a,3)} = ${a} · ${a} · ${a}`,`Najpierw ${a} · ${a} = ${a*a}, potem ${a*a} · ${a} = ?`],
+      trap:v=>v[0]===a**3?null:v[0]===3*a?`To jest ${a} · 3. A ${P(a,3)} = ${a} · ${a} · ${a}! 🏰`:(v[0]===a*a?`Za mało! To było ${P(a,2)}. Potrzebujesz trzech ${a}.`:null),
+      solution:`${P(a,3)} = ${a} · ${a} · ${a} = ${a*a} · ${a} = <b>${a**3}</b>`};
+  }
+  if(t<.7){
+    const a=R(3,9),e=pick([2,3]);
+    const m=e===2?mc(`${a} · ${a}`,[`${a} · 2`,`${a} + ${a}`,`${a} · ${a} · ${a}`]):mc(`${a} · ${a} · ${a}`,[`${a} · 3`,`${a} + ${a} + ${a}`,`${a} · ${a}`]);
+    return {key:'pm'+a+e,html:`Co oznacza zapis <b style="font-size:26px">${P(a,e)}</b>?`,...m,
+      hints:[`Cyferka u góry mówi, <b>ile razy</b> liczba ${a} stoi w mnożeniu.`,`${e===2?'Dwa':'Trzy'} razy ${a}, połączone kropką mnożenia.`],
+      solution:`${P(a,e)} = ${Array(e).fill(a).join(' · ')} = <b>${a**e}</b>`};
+  }
+  if(t<.85){
+    const pr=pick([[2,3,3,2],[2,4,4,2],[3,3,5,2],[2,5,5,2],[4,3,8,2],[10,2,5,3],[6,2,3,3],[7,2,4,3],[3,2,2,3],[1,5,5,1]]);
+    const [a,m,b,n]=Math.random()<.5?pr:[pr[2],pr[3],pr[0],pr[1]];
+    const x=a**m,y=b**n;
+    const A=P(a,m),B=P(b,n);
+    const ch=[A,B,'Są równe'];const correct=x>y?0:(y>x?1:2);
+    return {key:'pc'+a+m+b+n,html:`Która liczba jest większa?<span class="big">${A} &nbsp;czy&nbsp; ${B}</span>`,choices:ch,correct,
+      hints:[`Policz każdą osobno. Pamiętaj: potęga to mnożenie tej samej liczby!`,`${A} = ${Array(m).fill(a).join(' · ')} &nbsp;&nbsp; ${B} = ${Array(n).fill(b).join(' · ')}`],
+      trap:(v,c)=>c!==correct&&ch[c]!=='Są równe'?`Policz dokładnie: ${A} = ${x}, a ${B} = ?`:null,
+      solution:`${A} = <b>${x}</b>, ${B} = <b>${y}</b>`};
+  }
+  if(Math.random()<.5){
+    const k=R(2,5),a=R(2,6);
+    return {key:'pk'+k+a,html:`Oblicz (uwaga na kolejność!):<span class="big">${k} · ${P(a,2)} = ?</span>`,fields:[{label:'Wynik =',ans:k*a*a}],
+      hints:[`Najpierw <b>potęga</b>, potem mnożenie.`,`${P(a,2)} = ${a} · ${a} = ${a*a}`,`${k} · ${a*a} = ?`],
+      trap:v=>v[0]===k*a*a?null:v[0]===(k*a)**2?`Najpierw potęga! Ty policzyłaś (${k}·${a})<sup>2</sup>. Policz ${P(a,2)}, a dopiero potem razy ${k}.`:(v[0]===k*a*2?`${P(a,2)} to nie ${a}·2 😉`:null),
+      solution:`${P(a,2)} = ${a*a}, więc ${k} · ${a*a} = <b>${k*a*a}</b>`};
+  }
+  const a=R(2,7),b=R(2,7);
+  return {key:'ps'+a+b,html:`Oblicz:<span class="big">${P(a,2)} + ${P(b,2)} = ?</span>`,fields:[{label:'Wynik =',ans:a*a+b*b}],
+    hints:[`Policz każdą potęgę osobno, potem dodaj.`,`${P(a,2)} = ${a*a}, a ${P(b,2)} = ?`],
+    trap:v=>v[0]===a*a+b*b?null:v[0]===2*a+2*b?`Ojej, to było mnożenie przez 2. ${P(a,2)} = ${a}·${a}!`:(v[0]===(a+b)**2?`Najpierw policz potęgi osobno, potem dodaj.`:null),
+    solution:`${a*a} + ${b*b} = <b>${a*a+b*b}</b>`};
+}
+
+// ❄️ Zera
+function genZera(){
+  if(Math.random()<.45){
+    const d1=pick([2,3,4,5,6,7,8,9,12,15,25]),d2=R(2,9);
+    let k1=R(0,3),k2=R(1,2);if(k1+k2>4)k1=4-k2;
+    const A=d1*10**k1,B=d2*10**k2,ans=A*B,z=k1+k2;
+    return {key:'zm'+A+'x'+B,html:`Oblicz w pamięci:<span class="big">${fmt(A)} · ${fmt(B)} = ?</span>`,fields:[{label:'Wynik =',ans}],
+      hints:[`Zakryj zera i pomnóż to, co zostało: <b>${d1} · ${d2}</b>`,`${d1} · ${d2} = ${d1*d2}`,`Policz wszystkie zera z końca obu liczb: ${k1} + ${k2} = ${z}. Dopisz je do ${d1*d2}.`],
+      trap:v=>(v[0]*10===ans||v[0]===ans*10||v[0]*100===ans||v[0]===ans*100)?`Prawie! Policz zera ❄️ — razem jest ich ${z}, dopisz je do ${d1*d2}.`:null,
+      solution:`${d1} · ${d2} = ${d1*d2}, dopisuję ${z} ${zer(z)} → <b>${fmt(ans)}</b>`};
+  }
+  const d=R(2,9),e=R(2,9);
+  let k=Math.random()<.75?R(1,2):0,m=R(0,2);if(k+m===0)m=1;
+  const B=d*10**k,q=e*10**m,A=B*q;
+  const core=d*e*10**m;
+  return {key:'zd'+A+':'+B,html:`Oblicz w pamięci:<span class="big">${fmt(A)} : ${fmt(B)} = ?</span>`,fields:[{label:'Wynik =',ans:q}],
+    widget:k>0?{type:'zeros',a:A,b:B}:null,
+    hints:k>0?[`Zamroź ❄️ tyle samo zer na końcu obu liczb — użyj przycisku powyżej!`,`Po zamrożeniu zostaje: <b>${fmt(core)} : ${d}</b>`,`${d*e} : ${d} = ${e}${m?`, dopisz ${m} ${zer(m)}`:''} → ?`]
+            :[`Dzielnik ${d} nie ma zer. Podziel samą „główkę”: <b>${d*e} : ${d}</b>`,`${d*e} : ${d} = ${e}`,`Dopisz zera, które zostały w ${fmt(A)}: ${m} ${zer(m)}.`],
+    trap:v=>(v[0]*10===q||v[0]===q*10||v[0]===q*100||v[0]*100===q)?`Ups, za dużo albo za mało zer! Skreśl tyle samo zer w obu liczbach. Sprawdź: ${fmt(v[0])} · ${fmt(B)} = ${fmt(v[0]*B)}, a ma wyjść ${fmt(A)}.`:null,
+    solution:`${fmt(A)} : ${fmt(B)} = ${fmt(core)} : ${d} = <b>${fmt(q)}</b>. Sprawdzenie: ${fmt(q)} · ${fmt(B)} = ${fmt(A)} ✔`};
+}
+
+// 🧱 Reszta
+const NAMES=['Kamil','Tomek','Werka','Amelia','Zuza','Kuba','Ola','Maja','Lena','Antek'];
+const GIRLS=['Werka','Amelia','Zuza','Ola','Maja','Lena'];
+function genReszta(){
+  if(Math.random()<.6){
+    const b=R(3,9),q=R(2,12),r=R(1,b-1)*(Math.random()<.9?1:0),a=b*q+r;
+    return {key:'r'+a+':'+b,html:`Podziel z resztą:<span class="big">${a} : ${b} = ? r ?</span>`,
+      fields:[{label:'Wynik',ans:q},{label:'Reszta (r)',ans:r}],
+      hints:[`Ile razy ${b} zmieści się w ${a}? Poszukaj w tabliczce mnożenia przez ${b}:`+multTable(b,a),
+        `${b} · ${q} = ${b*q} — to najwięcej, co nie przekracza ${a}. Wynik to ${q}.`,
+        `Reszta to to, co zostało: ${a} − ${b*q} = ? <br>⭐ Reszta musi być <b>mniejsza niż ${b}</b>!`],
+      trap:v=>{const[qq,rr]=v;if(rr>=b)return `Stop! 🧱 Reszta ${rr} jest ${rr===b?'równa':'większa niż'} ${b}. To znaczy, że ${b} zmieści się jeszcze raz. Reszta musi być mniejsza od ${b}!`;
+        if(qq*b+rr!==a)return `Sprawdź: ${qq} · ${b} + ${rr} = ${qq*b+rr}, a powinno wyjść ${a}.`;return null},
+      solution:`${a} : ${b} = <b>${q} r ${r}</b>, bo ${b} · ${q} = ${b*q}, a ${a} − ${b*q} = ${r}`};
+  }
+  const [n1,n2]=shuffle(NAMES).slice(0,2);
+  let b1,b2,q1,q2,r1,r2;
+  do{b1=R(4,9);b2=R(4,9);q1=R(3,11);q2=R(3,11);r1=R(0,b1-1);r2=R(0,b2-1)}while(r1===r2||b1===b2);
+  const a1=b1*q1+r1,a2=b2*q2+r2,big=r1>r2?0:1,diff=Math.abs(r1-r2);
+  return {key:'rr'+a1+b1+a2+b2,html:`${n1} podzielił${GIRLS.includes(n1)?'a':''} <b>${a1} przez ${b1}</b>, a ${n2} podzielił${GIRLS.includes(n2)?'a':''} <b>${a2} przez ${b2}</b>. Kto otrzymał większą resztę? O ile większą?`,
+    fields:[{label:`Reszta: ${n1}`,ans:r1},{label:`Reszta: ${n2}`,ans:r2},{label:'O ile większa?',ans:diff}],
+    choiceLabel:'Kto ma większą resztę?',choices:[n1,n2],correct:big,
+    hints:[`Najpierw osobno: ${a1} : ${b1} oraz ${a2} : ${b2}. Każda reszta musi być mniejsza od swojego dzielnika!`,
+      `${b1} · ${q1} = ${b1*q1}, więc reszta ${n1}: ${a1} − ${b1*q1} = ?`+multTable(b1,a1),
+      `${b2} · ${q2} = ${b2*q2}, więc reszta ${n2}: ${a2} − ${b2*q2} = ?<br>„O ile większa?” → odejmij: większa − mniejsza.`],
+    trap:(v,c)=>{if(v[0]>=b1)return `Reszta ${n1} (${v[0]}) nie może być ${v[0]===b1?'równa':'większa od'} ${b1}! 🧱`;if(v[1]>=b2)return `Reszta ${n2} (${v[1]}) nie może być ${v[1]===b2?'równa':'większa od'} ${b2}! 🧱`;
+      if(v[0]===r1&&v[1]===r2&&v[2]!==diff&&v[2]===r1+r2)return `„O ile większa” to odejmowanie, nie dodawanie: ${Math.max(r1,r2)} − ${Math.min(r1,r2)}.`;
+      if(v[0]===r1&&v[1]===r2&&v[2]!==diff&&v[2]===Math.max(r1,r2))return `Reszty masz dobrze! Ale „o ile większa” = większa − mniejsza.`;return null},
+    solution:`${a1} : ${b1} = ${q1} r <b>${r1}</b>, &nbsp; ${a2} : ${b2} = ${q2} r <b>${r2}</b>.<br>Większą resztę ma <b>${big?n2:n1}</b>, o ${Math.max(r1,r2)} − ${Math.min(r1,r2)} = <b>${diff}</b>.`};
+}
+
+// 🧞 Sprytne pary
+const FRIENDS=[[2,5],[4,25],[5,20],[2,50],[25,8],[5,40],[50,4],[125,8],[20,50],[25,4]];
+function genSpryt(){
+  if(Math.random()<.22){
+    const f=pick(FRIENDS);
+    const wr=shuffle([[3,25],[4,24],[7,15],[8,12],[3,35],[9,11],[4,26],[5,19],[2,49],[6,15]]).slice(0,3);
+    const m=mc(`${f[0]} · ${f[1]}`,wr.map(w=>`${w[0]} · ${w[1]}`));
+    return {key:'sc'+f,html:`Która para to <b>sprytni przyjaciele</b>? Ich iloczyn daje 10, 100, 200 albo 1000.`,...m,
+      hints:[`Przyjaciele: 2·5, 4·25, 20·5, 2·50, 8·125… Szukaj podobnych!`],
+      solution:`${f[0]} · ${f[1]} = <b>${f[0]*f[1]}</b> 🎉`};
+  }
+  const [p,q]=pick(FRIENDS);let x;do{x=R(6,49)}while(x%5===0||x===p||x===q);
+  const ord=shuffle([p,x,q]);if(ord[0]===x&&ord[2]!==x&&Math.random()<.5)ord.reverse();
+  const pq=p*q,ans=pq*x;
+  return {key:'s'+ord.join('.'),html:`Policz sprytnie:<span class="big">${ord.join(' · ')} = ?</span>`,
+    widget:{type:'pairs',factors:ord},fields:[{label:'Wynik =',ans}],
+    hints:[`Kolejność mnożenia można zmieniać! Znajdź dwie liczby, które razem dają okrągłą liczbę. Stuknij je w okienku powyżej 🤝`,
+      `Przyjaciele to <b>${p} i ${q}</b>: ${p} · ${q} = ${pq} 🎉`,
+      `Teraz ${pq} · ${x} — dopisz zera do ${x}.`],
+    trap:v=>{const w=v[0];if(w===ans)return null;if(w===pq*p||w===pq*q)return `Uważaj! Jedna liczba została użyta dwa razy, a <b>${x}</b> się zgubiła. Każda liczba — dokładnie raz!`;
+      if(w===pq)return `Zgubiła się liczba <b>${x}</b>! Pomnóż jeszcze ${pq} · ${x}.`;
+      if(w===x*p||w===x*q)return `Jedna liczba się zgubiła. Policz najpierw ${p} · ${q}.`;return null},
+    solution:`${p} · ${q} = ${pq}, a ${pq} · ${x} = <b>${fmt(ans)}</b>`};
+}
+
+// 🛍️ Zadania z treścią
+const SHOPS=[
+  {who:'Werka',why:'nagrywa vloga i kupuje sprzęt',items:[['lampę ring',35,59],['mikrofon',49,89],['statyw',19,39],['naklejki z logo kanału',9,19]],extra:['opakowania baterii',5,9]},
+  {who:'Amelia',why:'jest w sklepie z gadżetami z gier',items:[['bluzę z ludzikiem z gry',59,95],['kartę podarunkową',20,50],['plecak',39,79],['brelok',8,15]],extra:['paczki żelków',4,9]},
+  {who:'Mama',why:'kupuje prezenty urodzinowe',items:[['pluszaka z bajki',29,59],['kubek z księżniczką',15,35],['puzzle',19,49],['książkę',25,45]],extra:['paczki balonów',6,12]},
+  {who:'Zuza',why:'urządza swój pokój',items:[['lampkę LED',25,49],['poduszkę',29,55],['slime',9,19],['plakat',12,25]],extra:['pary skarpetek',7,12]},
+  {who:'Lena',why:'idzie na zakupy przed wycieczką do parku rozrywki',items:[['bilet',49,89],['czapkę z uszami',29,49],['bidon',15,29],['zestaw kredek',9,19]],extra:['tubki brokatu',5,9]},
+];
+const TABLES=[
+  {title:'Sklepik z gadżetami',rows:[['brelok z ludzikiem',R(8,19)],['kubek z księżniczką',R(21,35)],['pluszak',R(36,49)]]},
+  {title:'Szkółka roślin',rows:[['piwonia',R(25,39)],['trawa ozdobna',R(15,24)],['laurowiśnia',R(40,49)]]},
+  {title:'Sklep ze slime’ami',rows:[['slime brokatowy',R(12,19)],['slime chmurka',R(21,29)],['zestaw do slime’a',R(35,49)]]},
+];
+function genZakupy(){
+  if(Math.random()<.68){
+    const s=pick(SHOPS);const its=shuffle(s.items).slice(0,3).map(([n,a,b])=>[n,n==='kartę podarunkową'?pick([20,30,40,50]):R(a,b)]);
+    const Sum=its.reduce((t,i)=>t+i[1],0);const k=R(2,4),p=R(s.extra[1],s.extra[2]),kp=k*p;
+    let B=Math.round((Sum+kp+pick([-14,-9,-6,-3,4,7,11,15]))/10)*10;if(B===Sum+kp)B+=10;if(B<=Sum)B=Sum+10;
+    const ok=B>=Sum+kp;
+    const forma=/a$/.test(s.who)?'kupiła':'kupił';
+    return {key:'zk'+Sum+B+kp,html:`${s.who} ${s.why}. ${s.who} ${forma} ${its[0][0]} za ${its[0][1]} zł, ${its[1][0]} za ${its[1][1]} zł i ${its[2][0]} za ${its[2][1]} zł. Na zakupy ${s.who==='Mama'?'mama':s.who} ma <b>${B} zł</b>. Czy wystarczy jej jeszcze na <b>${k} ${s.extra[0]} po ${p} zł</b>?`,
+      fields:[{label:'1️⃣ Ile już wydała?',ans:Sum,unit:'zł'},{label:`2️⃣ Ile kosztują ${k} ${s.extra[0]}?`,ans:kp,unit:'zł'},{label:'3️⃣ Ile razem?',ans:Sum+kp,unit:'zł'}],
+      choiceLabel:`4️⃣ Porównaj z ${B} zł:`,choices:['Wystarczy ✅','Nie wystarczy ❌'],correct:ok?0:1,
+      hints:[`Plan w 3 krokach: 1) dodaj ceny zakupów (każdą RAZ), 2) policz ${k} · ${p}, 3) dodaj oba wyniki i porównaj z budżetem.`,
+        `1) ${its[0][1]} + ${its[1][1]} + ${its[2][1]} = ? &nbsp; 2) ${k} · ${p} = ?`,
+        `Zakreśl wynik kroku 1 i podpisz „wydane”. W kroku 3 dodajesz tylko: wydane + ${k}·${p}. Potem: czy to więcej niż ${B} zł?`],
+      trap:(v,c)=>{
+        if(v[2]===2*Sum+kp||v[2]===2*Sum)return `Stop! 🛑 Zakupy policzone dwa razy! Sumę ${v[0]===Sum?Sum:'zakupów'} zł dodajesz tylko RAZ: wydane + ${k}·${p}.`;
+        if(v[1]===k+p)return `Krok 2 to mnożenie: ${k} · ${p}, nie ${k} + ${p}.`;
+        if(v[0]===Sum&&v[1]===kp&&v[2]===Sum+kp&&c!==(ok?0:1))return `Liczby masz super! Teraz porównaj: ${Sum+kp} zł ${ok?'≤':'>'} ${B} zł?`;
+        return null},
+      solution:`1) ${its.map(i=>i[1]).join(' + ')} = <b>${Sum} zł</b><br>2) ${k} · ${p} = <b>${kp} zł</b><br>3) ${Sum} + ${kp} = <b>${Sum+kp} zł</b> ${ok?'≤':'>'} ${B} zł → <b>${ok?'wystarczy':'nie wystarczy'}</b>`};
+  }
+  const T=pick(TABLES);const rows=T.rows.map(r=>[r[0],R(Math.max(8,r[1]-6),r[1]+6)]);
+  const [X,Y]=shuffle([0,1,2]).slice(0,2);const a=R(2,6),b=R(2,6);
+  const tx=a*rows[X][1],ty=b*rows[Y][1],tot=tx+ty;
+  let B=Math.round((tot+pick([-30,-20,-10,10,20,30]))/10)*10;if(B===tot)B+=10;
+  const more=tot>B;
+  return {key:'zt'+tx+ty+B,html:`<b>${T.title}</b> — cennik:<table class="ptable"><tr><th>Produkt</th><th>Cena</th></tr>${rows.map(r=>`<tr><td>${r[0]}</td><td>${r[1]} zł</td></tr>`).join('')}</table>Za <b>${a} × ${rows[X][0]}</b> i <b>${b} × ${rows[Y][0]}</b> zapłacimy więcej czy mniej niż <b>${B} zł</b>?`,
+    fields:[{label:`${a} · ${rows[X][1]} =`,ans:tx,unit:'zł'},{label:`${b} · ${rows[Y][1]} =`,ans:ty,unit:'zł'},{label:'Razem:',ans:tot,unit:'zł'}],
+    choiceLabel:`Porównaj z ${B} zł:`,choices:['Więcej','Mniej'],correct:more?0:1,
+    hints:[`Najpierw każdy produkt osobno: ilość · cena.`,`${a} · ${rows[X][1]} — możesz liczyć: ${a} · ${Math.floor(rows[X][1]/10)*10} + ${a} · ${rows[X][1]%10}`,`Dodaj oba wyniki i porównaj z ${B} zł.`],
+    trap:(v,c)=>v[0]===tx&&v[1]===ty&&v[2]===tot&&c!==(more?0:1)?`Liczby są dobre! Porównaj jeszcze raz: ${tot} zł i ${B} zł.`:null,
+    solution:`${a} · ${rows[X][1]} = ${tx} zł, ${b} · ${rows[Y][1]} = ${ty} zł, razem <b>${tot} zł</b> — to <b>${more?'więcej':'mniej'}</b> niż ${B} zł.`};
+}
+
+// ⚡ Prawda czy fałsz
+function genPF(){
+  const TF=['Prawda ✅','Fałsz ❌'];const t=R(1,5);
+  if(t===1){
+    const a=R(12,89)*100,b=R(2,9)*100,s=a+b;const c=Math.random()<.45?s:pick([a+b*10,s+1000,s-100,s+100]);
+    const tr=c===s;
+    return {key:'f1'+a+b+c,html:`Suma liczb <b>${fmt(a)}</b> i <b>${b}</b> jest równa <b>${fmt(c)}</b>.`,choices:TF,correct:tr?0:1,
+      hints:[`Policz na boku: ${fmt(a)} + ${b} = ?`,`Setki do setek: ${a/100} setek + ${b/100} setek = ${s/100} setek.`],
+      trap:(v,ch)=>c===a+b*10&&ch===0?`${b} to tylko ${b/100} setek, a nie ${b/100} tysięcy! 😉`:null,
+      solution:`${fmt(a)} + ${b} = <b>${fmt(s)}</b>, więc zdanie to <b>${tr?'prawda':'fałsz'}</b>.`};
+  }
+  if(t===2){
+    const a=R(100,199),b=R(12,59),d=a-b,c=d+pick([-2,-1,0,0,1,2]),rel=pick(['większa','mniejsza']);
+    const tr=rel==='większa'?d>c:d<c;
+    return {key:'f2'+a+b+c+rel,html:`Różnica liczb <b>${a}</b> i <b>${b}</b> jest ${rel} niż <b>${c}</b>.`,choices:TF,correct:tr?0:1,
+      hints:[`Najpierw policz na boku: ${a} − ${b} = ? (możesz pisemnie)`,`${a} − ${b} = ${d}`,`Czy ${d} jest ${rel} niż ${c}? Uwaga: liczba równa nie jest ani większa, ani mniejsza!`],
+      trap:(v,ch)=>d===c&&ch===0?`Różnica to dokładnie ${d} — jest RÓWNA ${c}, a równe to nie to samo co ${rel}!`:null,
+      solution:`${a} − ${b} = <b>${d}</b>. ${d} ${d>c?'>':d<c?'<':'='} ${c}, więc to <b>${tr?'prawda':'fałsz'}</b>.`};
+  }
+  if(t===3){
+    const n=R(1000,9999);const ds=String(n).split('');let m=n;
+    for(let i=0;i<10&&(m===n);i++){const p=shuffle(ds);if(p[0]!=='0')m=+p.join('')}
+    if(m===n)m=n+pick([9,90,-90,900]);
+    const sign=pick(['<','>']);const tr=sign==='<'?n<m:n>m;
+    return {key:'f3'+n+m+sign,html:`Czy to prawda?<span class="big">${n} ${sign==='<'?'&lt;':'&gt;'} ${m}</span>`,choices:TF,correct:tr?0:1,
+      hints:[`Porównuj od lewej: najpierw tysiące, potem setki, dziesiątki, jedności.`,`Znak &lt; to „dzióbek” — otwarta strona patrzy na większą liczbę 🐊`],
+      solution:`${n} ${n<m?'&lt;':'&gt;'} ${m}, więc to <b>${tr?'prawda':'fałsz'}</b>.`};
+  }
+  if(t===4){
+    const a=R(11,25),b=R(3,9),p=a*b,c=Math.random()<.5?p:pick([p+10,p-10,p+b,p-b]);const tr=c===p;
+    return {key:'f4'+a+b+c,html:`Iloczyn liczb <b>${a}</b> i <b>${b}</b> jest równy <b>${c}</b>.`,choices:TF,correct:tr?0:1,
+      hints:[`Iloczyn = wynik mnożenia. Policz ${a} · ${b}.`,`${a} · ${b} = ${Math.floor(a/10)*10}·${b} + ${a%10}·${b} = ${Math.floor(a/10)*10*b} + ${(a%10)*b}`],
+      solution:`${a} · ${b} = <b>${p}</b>, więc to <b>${tr?'prawda':'fałsz'}</b>.`};
+  }
+  const b=R(3,9),q=R(12,40),a=b*q,c=Math.random()<.5?q:pick([q+1,q-1,q+10]);const tr=c===q;
+  return {key:'f5'+a+b+c,html:`Iloraz liczb <b>${a}</b> i <b>${b}</b> jest równy <b>${c}</b>.`,choices:TF,correct:tr?0:1,
+    hints:[`Iloraz = wynik dzielenia. Sprawdź mnożeniem: ${c} · ${b} = ?`,`${c} · ${b} = ${c*b}. Czy to ${a}?`],
+    solution:`${a} : ${b} = <b>${q}</b> (bo ${q}·${b} = ${a}), więc to <b>${tr?'prawda':'fałsz'}</b>.`};
+}
+
+/* ================= ŚWIATY ================= */
+const WORLDS=[
+  {id:'pot',name:'Zamek Potęg',emoji:'🏰',c1:'#a855f7',c2:'#6d28d9',tag:'Kwadraty i sześciany',gen:genPot,
+   lesson:`<h3>Co to jest potęga? 👑</h3>Potęga to skrót od mnożenia <b>tej samej liczby</b>. Mała cyferka u góry mówi, <b>ile razy</b> ją napisać.
+   <div class="ex">9<sup>2</sup> = 9 · 9 = 81</div><div class="ex">2<sup>3</sup> = 2 · 2 · 2 = 8</div>
+   <div class="rule">⭐ Cyferka u góry to NIE jest „razy 2” albo „razy 3”!</div>
+   <div class="trap">🕵️ Chochlik ze sprawdzianu: <span class="x">9<sup>2</sup> = 18 ✗</span> (to było 9 · 2)<br>Poprawnie: <span class="v">9<sup>2</sup> = 81 ✓</span></div>
+   <h3>Dlaczego „do kwadratu”?</h3>Bo kwadrat 4 na 4 kratki ma 4 · 4 = 16 kratek:${dotGrid(4)}`},
+  {id:'zera',name:'Lodowa Kraina Zer',emoji:'❄️',c1:'#38bdf8',c2:'#0369a1',tag:'Mnożenie i dzielenie z zerami',gen:genZera,
+   lesson:`<h3>Mnożenie z zerami ✖️</h3>Zakryj zera, pomnóż „główki”, a potem dopisz <b>wszystkie</b> zera.
+   <div class="ex">300 · 40 → 3 · 4 = 12 → dopisz 3 zera → 12 000</div>
+   <h3>Dzielenie z zerami ➗ — zamrażanie! ❄️</h3>Zamroź (skreśl) <b>tyle samo zer</b> na końcu obu liczb. Potem podziel to, co zostało.
+   <div class="ex">3600 : 60 → 360 : 6 = 60</div>
+   <div class="trap">🕵️ Chochlik ze sprawdzianu: <span class="x">3600 : 60 = 600 ✗</span><br>Poprawnie: <span class="v">60 ✓</span></div>
+   <div class="rule">⭐ Sprawdzaj mnożeniem: 60 · 60 = 3600 ✔ &nbsp; (a 600 · 60 = 36 000 ✘)</div>`},
+  {id:'reszta',name:'Obby Reszt',emoji:'🧱',c1:'#f43f5e',c2:'#9f1239',tag:'Dzielenie z resztą',gen:genReszta,
+   lesson:`<h3>Jak dzielić z resztą? 🧱</h3>53 : 7 — ile razy 7 zmieści się w 53?<br>7 · 7 = 49 ✔ &nbsp; 7 · 8 = 56 ✘ (za dużo!)<br>Więc 7 razy, a zostaje 53 − 49 = 4.
+   <div class="ex">53 : 7 = 7 r 4</div>
+   <div class="rule">⭐ ZŁOTA ZASADA: reszta jest zawsze <b>mniejsza</b> od liczby, przez którą dzielisz. Przy dzieleniu przez 7 reszta może być tylko 0, 1, 2, 3, 4, 5 albo 6.</div>
+   <div class="trap">🕵️ Chochlik ze sprawdzianu: <span class="x">reszta 16 przy dzieleniu przez 7 ✗</span><br>Poprawnie: <span class="v">53 : 7 = 7 r 4 ✓</span>, a 55 : 6 = 9 r 1.<br>Kamil ma większą resztę o <span class="v">4 − 1 = 3 ✓</span></div>
+   <div class="rule">⭐ „O ile większa?” → zawsze <b>odejmujesz</b>: większa − mniejsza.</div>`},
+  {id:'spryt',name:'Sprytne Pary',emoji:'🧞',c1:'#f59e0b',c2:'#b45309',tag:'Sprytne mnożenie',gen:genSpryt,
+   lesson:`<h3>Liczby-przyjaciółki 🤝</h3>Niektóre pary dają okrągłe wyniki:
+   <div class="ex">2 · 5 = 10 &nbsp; 4 · 25 = 100 &nbsp; 20 · 5 = 100<br>2 · 50 = 100 &nbsp; 8 · 125 = 1000</div>
+   W mnożeniu <b>kolejność można zmieniać</b>! Najpierw połącz przyjaciół, potem resztę.
+   <div class="ex">4 · 29 · 25 = (4 · 25) · 29 = 100 · 29 = 2900</div>
+   <div class="trap">🕵️ Chochlik ze sprawdzianu: <span class="x">4 · 29 · 25 = 2500 ✗</span> — zgubiła się 29!<br>Poprawnie: <span class="v">2900 ✓</span></div>
+   <div class="rule">⭐ Każdą liczbę użyj <b>dokładnie raz</b>. Na końcu policz, czy wszystkie zostały użyte.</div>`},
+  {id:'zakupy',name:'Vlog Zakupowy',emoji:'🛍️',c1:'#ec4899',c2:'#9d174d',tag:'Zadania z treścią',gen:genZakupy,
+   lesson:`<h3>Plan jak u youtuberki 🎬</h3>Każde zadanie z zakupami rozwiązuj w krokach:
+   <div class="ex">1️⃣ Ile już wydano? (dodaj ceny — każdą RAZ)<br>2️⃣ Ile kosztują nowe rzeczy? (ilość · cena)<br>3️⃣ Dodaj oba wyniki<br>4️⃣ Porównaj z budżetem</div>
+   <div class="trap">🕵️ Chochlik ze sprawdzianu: 27 + 99 = 126, potem 126 + 62 = 188 ✔ … ale potem <span class="x">188 + 126 = 314 ✗</span> — zakupy policzone drugi raz!<br>Poprawnie: <span class="v">188 + 2 · 9 = 188 + 18 = 206 zł > 200 zł → nie wystarczy ✓</span></div>
+   <div class="rule">⭐ Gdy coś policzysz, zakreśl wynik i podpisz go („wydane: 188”). Wtedy nie dodasz go dwa razy.</div>`},
+  {id:'pf',name:'Prawda czy Fałsz',emoji:'⚡',c1:'#6366f1',c2:'#3730a3',tag:'Licz na boku i porównuj',gen:genPF,
+   lesson:`<h3>Błyskawica ⚡</h3>Najpierw <b>policz na boku</b>, dopiero potem decyduj.
+   <div class="ex">Różnica 112 i 26 jest większa niż 85?<br>112 − 26 = 86 → 86 > 85 → PRAWDA</div>
+   <div class="trap">🕵️ Chochlik ze sprawdzianu: dobrze policzone 86, ale zaznaczone <span class="x">obie kratki ✗</span><br>Poprawnie: <span class="v">tylko „prawda” ✓</span></div>
+   <div class="rule">⭐ Zaznacz <b>jedną</b> kratkę. Uważaj: „równa” to nie „większa”!</div>`},
+  {id:'boss',name:'Mega Obby — Boss',emoji:'👑',c1:'#1f2937',c2:'#7c2d12',tag:'Mieszanka wszystkiego · 12 zadań',gen:null,
+   lesson:`<h3>Finałowa misja 👑</h3>12 zadań ze wszystkich światów, wymieszanych jak w prawdziwym sprawdzianie. Zdobądź 2 gwiazdki, żeby odblokować <b>Koronę Bossa</b> w sklepie!
+   <div class="rule">⭐ Nie spiesz się. Podpowiedzi 💡 są dla ciebie — korzystaj śmiało.</div>`},
+];
+const W=id=>WORLDS.find(w=>w.id===id);
+
+/* ================= SKLEP ================= */
+const SHOP=[['🦊',0],['🐱',40],['🐼',60],['🐸',60],['❄️',80],['🦄',100],['🧚',120],['🧜‍♀️',120],['👸',150],['🧝‍♀️',150],['🐉',200],['🤖',200],['🦸‍♀️',250],['🌈',300],['🐲',350],['👑','boss']];
+
+/* ================= EKRANY ================= */
+const GREETS=[
+  'Hejka <b>Amelia</b>! Gotowa na dzisiejsze wyzwanie? 🎬',
+  'Siema! Zbierz gwiazdki w 3 światach i odblokuj <b>Bossa</b>! 👑',
+  'Pamiętasz? <b>9² to 9 · 9</b>, a nie 9 · 2 😉 Zajrzyj do Zamku Potęg!',
+  'Każda dobra odpowiedź to 💎 — wydasz je w sklepie z awatarami!',
+  'Dziś testujemy: czy reszta może być większa od dzielnika? Spoiler: NIE 🧱',
+  'Jak coś nie wychodzi — kliknij 💡. Nawet youtuberki pytają o radę! ✨',
+];
+function topBar(){
+  const tot=Object.values(S.stars).reduce((a,b)=>a+b,0);
+  return `<div class="top"><div class="av">${S.avatar}</div><div class="hello">Amelia<small>Matma Quest</small></div>
+   <div class="pill">⭐ ${tot}</div><div class="pill" id="coins">💎 ${S.coins}</div>
+   <button class="iconbtn" onclick="shop()">🛒</button><button class="iconbtn" onclick="S.sound=!S.sound;save();home()">${S.sound?'🔊':'🔇'}</button></div>`;
+}
+function starStr(n){return [1,2,3].map(i=>`<span class="${i<=n?'':'off'}">⭐</span>`).join('')}
+function bossOpen(){return WORLDS.filter(w=>w.id!=='boss'&&(S.stars[w.id]||0)>=1).length}
+function home(){
+  run=null;
+  app.innerHTML=`<div class="home">${topBar()}
+   <div class="logo"><h1>Matma <span>Quest</span></h1><p>Wybierz świat i zbieraj gwiazdki!</p>${S.streak>1?`<span class="streak">🔥 Seria: ${S.streak} dni z rzędu</span>`:''}</div>
+   <div class="bubble"><div class="m">🧚</div><div>${pick(GREETS)}</div></div>
+   <div class="worlds">${WORLDS.map(w=>{
+     const lock=w.id==='boss'&&bossOpen()<3;
+     return `<button class="wcard ${w.id==='boss'?'boss':''} ${lock?'locked':''}" style="--wc:${w.c1};--wc2:${w.c2}" onclick="openWorld('${w.id}')">
+      <div class="we">${w.emoji}</div><div><div class="wn">${w.name}</div><div class="wt">${w.tag}</div><div class="wst">${starStr(S.stars[w.id]||0)}</div></div>${lock?'<span class="lock">🔒</span>':''}</button>`}).join('')}</div>
+   <div class="foot">Rozwiązane zadania: ${S.solved} 💪<br>Ćwiczymy to, co sprawiło kłopot na sprawdzianie „Liczby i działania”.</div></div>`;
+}
+function openWorld(id){
+  const w=W(id);
+  if(id==='boss'&&bossOpen()<3){sBad();toast(`🔒 Zdobądź gwiazdkę w 3 światach, żeby odblokować Bossa (masz ${bossOpen()}/3)`);return}
+  sTap();
+  app.innerHTML=`<div class="lesson" style="--wc:${w.c1};--wc2:${w.c2}"><button class="back" onclick="home()">← Mapa</button>
+   <div class="lhead"><div class="we">${w.emoji}</div><h2>${w.name}</h2><p>${w.tag}</p></div>
+   <div class="card lcard">${w.lesson}</div>
+   <button class="bigbtn" onclick="startRun('${id}')">Start! 🚀</button></div>`;
+  scrollTo(0,0);
+}
+function shop(){
+  sTap();
+  app.innerHTML=`<div class="home">${topBar()}<div class="logo"><h1>Sklep <span>awatarów</span></h1><p>Wydaj swoje 💎 na nowego bohatera!</p></div>
+   <div class="shopgrid">${SHOP.map(([e,p])=>{const own=S.owned.includes(e);const bossItem=p==='boss';
+     const label=S.avatar===e?'✓ Twój':own?'Wybierz':bossItem?'🏆 Boss 2⭐':`💎 ${p}`;
+     const can=own||(!bossItem&&S.coins>=p)||(bossItem&&(S.stars.boss||0)>=2);
+     return `<button class="sitem ${S.avatar===e?'on':''} ${can?'':'no'}" onclick="buy('${e}')"><div class="e">${e}</div><div class="p">${label}</div></button>`}).join('')}</div>
+   <button class="bigbtn alt" style="margin-top:20px" onclick="home()">← Wróć na mapę</button></div>`;
+}
+function buy(e){
+  const [,p]=SHOP.find(x=>x[0]===e);
+  if(S.owned.includes(e)){S.avatar=e;sTap()}
+  else if(p==='boss'){if((S.stars.boss||0)>=2){S.owned.push(e);S.avatar=e;sWin();confetti(['👑','⭐'])}else{sBad();toast('Zdobądź 2 ⭐ w Mega Obby, żeby dostać koronę!');return}}
+  else if(S.coins>=p){S.coins-=p;S.owned.push(e);S.avatar=e;sWin();confetti([e,'✨'])}
+  else{sBad();toast(`Brakuje ci ${p-S.coins} 💎. Rozwiąż jeszcze kilka zadań!`);return}
+  save();shop();
+}
+
+/* ================= GRA ================= */
+let run=null;
+const CHEERS=['Mega! 🔥','Petarda! 💥','Jesteś legendą! 👑','Kozacko! 😎','Magia! ✨','Brawo, Amelia! 🌟','Level up! 🚀','Pro gracz! 🎮','Mistrzostwo! 🏆'];
+const OOPS=['Oof! Spróbuj jeszcze raz 💪','Prawie! Jeszcze raz 🙂','Hmm, coś nie gra 🤔'];
+
+function startRun(id){
+  const w=W(id);
+  run={w,n:id==='boss'?12:8,i:0,perfect:0,coins:0,res:[],seen:new Set()};
+  newQ();
+}
+function newQ(){
+  let gen=run.w.gen,from=null;
+  let q;
+  for(let t=0;t<20;t++){
+    if(run.w.id==='boss'){from=pick(WORLDS.filter(x=>x.gen));gen=from.gen}
+    q=gen();if(!run.seen.has(q.key))break;
+  }
+  run.seen.add(q.key);q.from=from;
+  Object.assign(run,{q,vals:(q.fields||[]).map(()=>''),active:0,choice:null,attempts:0,hintN:0,sol:false,answered:false});
+  renderPlay();
+}
+function trackHtml(){
+  let h='<div class="track">';
+  for(let i=0;i<run.n;i++){
+    const st=run.res[i];const cls=st===true?'done':st===false?'miss':(i===run.i?'cur':'');
+    h+=`<div class="blk ${cls}">${i===Math.min(run.i,run.n-1)?`<span class="me">${S.avatar}</span>`:''}</div>`;
+  }
+  return h+'<span class="flag">🏁</span></div>';
+}
+function renderPlay(){
+  const w=run.w,q=run.q,hasF=(q.fields||[]).length>0;
+  app.innerHTML=`<div class="play" style="--wc:${(q.from||w).c1};--wc2:${(q.from||w).c2}">
+   <div class="ptop"><button class="iconbtn" onclick="quitRun()">✕</button><div class="ptitle">${w.emoji} ${w.name}</div><button class="iconbtn" onclick="lessonPopup()">📖</button></div>
+   <div id="track">${trackHtml()}</div>
+   <div class="scroll" id="scroll"><div class="card">
+     <div class="qnum"><span>Zadanie ${run.i+1} z ${run.n}</span>${q.from?`<span class="tag">${q.from.emoji} ${q.from.name}</span>`:`<span class="pill" style="background:#f1ebff;color:#6d28d9;padding:3px 9px">💎 ${S.coins}</span>`}</div>
+     <div class="qtext">${q.html}</div>
+     <div id="widget"></div>
+     ${(q.fields||[]).map((f,i)=>`<div class="frow"><span class="flabel">${f.label}</span><div class="field" id="f${i}" onclick="focusF(${i})"><span class="fv"></span></div>${f.unit?`<span class="unit">${f.unit}</span>`:''}</div>`).join('')}
+     ${q.choices?`${q.choiceLabel?`<div class="clabel">${q.choiceLabel}</div>`:''}<div class="choices ${q.choices.length===2?'two':''}">${q.choices.map((c,i)=>`<button class="choice" data-c="${i}" onclick="choose(${i})">${c}</button>`).join('')}</div>`:''}
+     <div id="fb" class="fb"></div>
+     <div id="hints"></div>
+   </div></div>
+   <div class="bottom">
+     <div class="actions"><button class="btn hb" id="hb" onclick="hint()">💡 Podpowiedź</button><button class="btn go" id="go" onclick="check()">Sprawdź ✓</button></div>
+     ${hasF?`<div class="keypad" id="kp">${[1,2,3,4,5,6,7,8,9].map(n=>`<button class="key" onclick="key('${n}')">${n}</button>`).join('')}<button class="key fn" onclick="key('back')">⌫</button><button class="key" onclick="key('0')">0</button><button class="key fn" onclick="key('next')">↵</button></div>`:''}
+   </div></div>`;
+  if(q.widget?.type==='zeros')wZeros(q.widget);
+  if(q.widget?.type==='pairs')wPairs(q.widget);
+  drawFields();
+}
+function drawFields(){
+  (run.q.fields||[]).forEach((f,i)=>{const el=$('f'+i);if(!el)return;el.querySelector('.fv').textContent=run.vals[i]===''?'':fmt(run.vals[i]);
+    el.classList.toggle('active',i===run.active&&!run.answered)});
+}
+function focusF(i){if(run.answered)return;run.active=i;$('f'+i).classList.remove('bad');sTap();drawFields()}
+function key(k){
+  if(!run||run.answered)return;
+  const i=run.active;let v=run.vals[i];
+  if(k==='back')v=v.slice(0,-1);
+  else if(k==='next'){run.active=(i+1)%run.vals.length;sTap();drawFields();return}
+  else if(v.length<7)v=(v==='0'?'':v)+k;
+  run.vals[i]=v;$('f'+i).classList.remove('bad','ok');sTap();drawFields();
+}
+function choose(i){
+  if(run.answered)return;run.choice=i;sTap();
+  document.querySelectorAll('.choice').forEach(b=>{b.classList.remove('bad','ok');b.classList.toggle('sel',+b.dataset.c===i)});
+}
+function fb(type,html){const el=$('fb');el.className='fb '+type;el.innerHTML=html;setTimeout(()=>el.scrollIntoView({behavior:'smooth',block:'nearest'}),30)}
+function check(){
+  if(run.answered){return advance()}
+  const q=run.q;
+  if(run.vals.some(v=>v==='')||(q.choices&&run.choice===null)){fb('warn','Uzupełnij wszystkie okienka 🙂');tone([440],.08);return}
+  const nums=run.vals.map(Number);
+  const fOk=(q.fields||[]).map((f,i)=>nums[i]===f.ans);
+  const cOk=q.choices?run.choice===q.correct:true;
+  fOk.forEach((ok,i)=>{const el=$('f'+i);el.classList.remove('ok','bad');void el.offsetWidth;el.classList.add(ok?'ok':'bad')});
+  if(q.choices){const b=document.querySelector(`.choice[data-c="${run.choice}"]`);b.classList.remove('ok','bad');void b.offsetWidth;b.classList.add(cOk?'ok':'bad')}
+  if(fOk.every(Boolean)&&cOk){
+    run.answered=true;
+    const perfect=run.attempts===0&&!run.sol;
+    const gain=run.sol?0:(run.attempts===0&&run.hintN===0?10:5);
+    if(perfect)run.perfect++;
+    run.res[run.i]=perfect;
+    S.coins+=gain;S.solved++;run.coins+=gain;save();
+    sOk();if(perfect)confetti();coinFly(gain,$('go'));
+    fb('ok',`<span class="cheer">${pick(CHEERS)}</span>${gain?`+${gain} 💎`:'Następnym razem bez rozwiązania — dasz radę!'}<span class="sol">${q.solution}</span>`);
+    $('go').textContent=run.i+1>=run.n?'Zobacz wynik 🏁':'Dalej ➜';
+    $('hb').disabled=true;drawFields();
+    $('track').innerHTML=trackHtml();
+  }else{
+    run.attempts++;sBad();
+    const msg=q.trap?q.trap(nums,run.choice):null;
+    const which=(q.fields||[]).length>1&&fOk.some(Boolean)?' Zielone okienka są dobre — popraw czerwone.':'';
+    fb('bad',`${msg||pick(OOPS)}${!msg?which:''}${run.attempts>=2&&!run.sol?'<button class="linkbtn" onclick="showSol()">👀 Pokaż rozwiązanie</button>':(!msg&&run.hintN===0?'<br><small>Kliknij 💡, jeśli potrzebujesz pomocy.</small>':'')}`);
+  }
+}
+function hint(){
+  const q=run.q;if(run.answered)return;
+  if(run.hintN<q.hints.length){
+    const h=document.createElement('div');h.className='hint';h.innerHTML=`<span class="hn">💡 Podpowiedź ${run.hintN+1}:</span> ${q.hints[run.hintN]}`;
+    $('hints').appendChild(h);run.hintN++;tone([880,1100],.07);
+    setTimeout(()=>h.scrollIntoView({behavior:'smooth',block:'nearest'}),30);
+    $('hb').textContent=run.hintN<q.hints.length?`💡 Kolejna (${run.hintN}/${q.hints.length})`:'👀 Rozwiązanie';
+  }else showSol();
+}
+function showSol(){
+  if(run.sol)return;run.sol=true;
+  const h=document.createElement('div');h.className='hint solution';h.innerHTML=`<span class="hn">👀 Rozwiązanie:</span><br>${run.q.solution}<br><small>Teraz wpisz odpowiedź i kliknij „Sprawdź”.</small>`;
+  $('hints').appendChild(h);$('hb').disabled=true;setTimeout(()=>h.scrollIntoView({behavior:'smooth',block:'nearest'}),30);
+}
+function advance(){
+  run.i++;
+  if(run.i>=run.n)return finish();
+  newQ();
+}
+function quitRun(){
+  if(run.i>0&&!confirm('Wyjść z misji? Postęp tej rundy przepadnie.'))return;
+  home();
+}
+function lessonPopup(){const w=run.q.from||run.w;modal(`<div style="font-size:16px;line-height:1.5;font-weight:600" class="lcard">${w.lesson}</div>`)}
+function finish(){
+  const n=run.n,p=run.perfect;let st=1;if(p>=Math.ceil(n*.6))st=2;if(p>=n-1)st=3;
+  const prev=S.stars[run.w.id]||0;if(st>prev)S.stars[run.w.id]=st;
+  const bonus=st*10;S.coins+=bonus;
+  const today=new Date().toDateString(),yest=new Date(Date.now()-864e5).toDateString();
+  if(S.lastDay!==today){S.streak=S.lastDay===yest?S.streak+1:1;S.lastDay=today}
+  save();sWin();confetti();setTimeout(()=>confetti(['⭐','🏆','💎']),900);
+  const w=run.w;
+  const title=st===3?'PERFEKCYJNIE! 🏆':st===2?'Świetna robota! 🎉':'Misja ukończona! 💪';
+  const msg=st===3?'Chochliki ze sprawdzianu nie mają z tobą szans!':st===2?'Jeszcze jedna runda i zdobędziesz 3 gwiazdki!':'Każda runda czyni cię mocniejszą. Spróbuj jeszcze raz — zadania będą inne!';
+  const unlocked=w.id!=='boss'&&prev===0&&bossOpen()===3;
+  app.innerHTML=`<div class="res" style="--wc:${w.c1};--wc2:${w.c2}">
+   <div style="font-size:60px">${w.emoji}</div><h2>${title}</h2>
+   <div class="bigstars">${starStr(st)}</div>
+   <div style="font-weight:800">Za pierwszym razem: ${p} z ${n} · zdobyte 💎 ${run.coins+bonus}</div>
+   <div class="card">🧚 ${msg}${unlocked?'<br><b>🔓 Odblokowałaś Bossa — Mega Obby czeka!</b>':''}${w.id==='boss'&&st>=2?'<br><b>👑 Korona Bossa czeka na ciebie w sklepie!</b>':''}</div>
+   <div class="row"><button class="bigbtn alt" onclick="home()">🗺️ Mapa</button><button class="bigbtn" onclick="startRun('${w.id}')">🔁 Jeszcze raz</button></div></div>`;
+  run=null;scrollTo(0,0);
+}
+
+/* ================= WIDŻETY ================= */
+function wZeros(wd){
+  const el=$('widget');let c=0;
+  const tz=n=>{const s=String(n);let k=0;for(let i=s.length-1;i>0&&s[i]==='0';i--)k++;return k};
+  const max=Math.min(tz(wd.a),tz(wd.b));
+  const dig=n=>{const s=String(n);return [...s].map((ch,i)=>`<span class="dg ${i>=s.length-c?'frozen':''}">${ch}</span>`).join('')};
+  function draw(){
+    el.innerHTML=`<div class="wbox"><div class="wlabel">Lodowa maszyna ❄️</div><div class="zrow"><span>${dig(wd.a)}</span><span>:</span><span>${dig(wd.b)}</span></div>
+     ${c?`<div class="znote">Zostaje: <b>${fmt(wd.a/10**c)} : ${fmt(wd.b/10**c)}</b></div>`:''}
+     <button class="mini" id="frz">❄️ Zamroź parę zer</button>${c?'<button class="mini ghost" id="unf">↺</button>':''}</div>`;
+    $('frz').onclick=()=>{if(c<max){c++;sMagic();draw()}else{sBad();toast(c?'Brak kolejnej pary zer — teraz podziel! ✨':'Brak pary zer do zamrożenia')}};
+    if(c)$('unf').onclick=()=>{c=0;sTap();draw()};
+  }
+  draw();
+}
+function wPairs(wd){
+  const el=$('widget');let chips,sel,msg;
+  const reset=()=>{chips=wd.factors.map(v=>({v,gold:false}));sel=[];msg=''};reset();
+  const ROUND=[10,100,200,1000];
+  function draw(){
+    el.innerHTML=`<div class="wbox"><div class="wlabel">Stuknij dwie liczby-przyjaciółki 🤝</div><div class="chips">${chips.map((c,i)=>`<button class="chip ${c.gold?'gold':''} ${sel.includes(i)?'sel':''}" data-i="${i}">${fmt(c.v)}</button>`).join('<span class="dot">·</span>')}</div>
+     <div class="wmsg">${msg}</div><button class="mini ghost" id="prs">↺ od nowa</button></div>`;
+    el.querySelectorAll('.chip').forEach(b=>b.onclick=()=>tapChip(+b.dataset.i,b));
+    $('prs').onclick=()=>{reset();sTap();draw()};
+  }
+  function tapChip(i,b){
+    if(chips[i].gold){msg=`Super! Teraz policz w głowie: ${chips.map(c=>fmt(c.v)).join(' · ')} ✨`;sTap();draw();return}
+    if(sel.includes(i)){sel=sel.filter(x=>x!==i);sTap();draw();return}
+    sel.push(i);sTap();
+    if(sel.length<2)return draw();
+    const [x,y]=sel,p=chips[x].v*chips[y].v;
+    if(ROUND.includes(p)){
+      const keep=chips.filter((_,k)=>k!==x&&k!==y);const at=Math.min(x,y);keep.splice(at,0,{v:p,gold:true});chips=keep;sel=[];
+      msg=`${fmt(p)} 🎉 Teraz zostało: ${chips.map(c=>fmt(c.v)).join(' · ')}`;sMagic();draw();
+    }else{
+      msg=`${chips[x].v} · ${chips[y].v} = ${fmt(p)} — to nie jest okrągła liczba. Szukaj dalej 🔎`;sel=[];sBad();draw();
+      el.querySelectorAll('.chip').forEach(c=>{if(+c.dataset.i===x||+c.dataset.i===y)c.classList.add('shake')});
+    }
+  }
+  draw();
+}
+
+const app=$('app');
+home();
+</script>
+</body>
+</html>
