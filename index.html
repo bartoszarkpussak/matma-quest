@@ -32,9 +32,9 @@ button{font:inherit;color:inherit;cursor:pointer}
 .top{display:flex;align-items:center;gap:8px;color:#fff}
 .av{width:46px;height:46px;border-radius:15px;background:rgba(255,255,255,.18);display:grid;place-items:center;font-size:28px;border:2px solid rgba(255,255,255,.4);flex:none}
 .hello{font-weight:900;font-size:18px;flex:1;line-height:1.1}
-.hello small{display:block;font-weight:700;font-size:12px;opacity:.8}
-.pill{background:rgba(0,0,0,.28);border-radius:999px;padding:7px 11px;font-weight:900;font-size:15px;white-space:nowrap}
-.iconbtn{background:rgba(255,255,255,.16);border:0;color:#fff;font-size:20px;width:42px;height:42px;border-radius:13px;flex:none}
+.hello small{display:none}
+.pill{background:rgba(0,0,0,.28);border-radius:999px;padding:7px 9px;font-weight:900;font-size:15px;white-space:nowrap}
+.iconbtn{background:rgba(255,255,255,.16);border:0;color:#fff;font-size:19px;width:38px;height:38px;border-radius:13px;flex:none}
 .logo{color:#fff;text-align:center;margin:18px 0 4px}
 .logo h1{margin:0;font-size:34px;font-weight:900;letter-spacing:-.5px;text-shadow:0 4px 0 rgba(0,0,0,.25)}
 .logo h1 span{color:var(--gold)}
@@ -188,6 +188,33 @@ sup{font-size:.6em}
 @keyframes fall{to{transform:translateY(110vh) rotate(540deg)}}
 .coinfly{position:fixed;z-index:60;font-weight:900;color:var(--gold);font-size:22px;pointer-events:none;animation:up 1s ease-out forwards;text-shadow:0 2px 0 rgba(0,0,0,.3)}
 @keyframes up{to{transform:translateY(-70px);opacity:0}}
+.tabs{display:flex;gap:8px;margin-top:14px}
+.tab{flex:1;border:0;border-radius:15px;padding:11px 8px;font-weight:900;font-size:16px;background:rgba(255,255,255,.15);color:#fff}
+.tab.on{background:#fff;color:var(--ink);box-shadow:0 5px 0 rgba(0,0,0,.2)}
+.new{background:var(--gold);color:#3b2600;border-radius:999px;padding:2px 7px;font-size:11px;margin-left:4px;vertical-align:2px}
+.qbox{display:inline-block;min-width:1.3em;border:3px dashed #a78bfa;border-radius:10px;padding:0 .15em;color:#a78bfa;line-height:1.2}
+.parentbtn{margin-top:10px;background:rgba(255,255,255,.14);border:0;color:#fff;border-radius:999px;padding:7px 14px;font-weight:800;font-size:13px}
+.holdbtn{position:relative;overflow:hidden;width:100%;border:0;border-radius:18px;height:58px;background:#efeaff;font-size:19px;margin-top:10px;touch-action:none}
+.holdbtn #holdfill{position:absolute;left:0;top:0;bottom:0;width:0;background:#c4b5fd}
+.holdbtn b{position:relative}
+.parent .logo p{opacity:.85}
+.ph{color:#fff;margin:20px 0 8px;font-size:18px;font-weight:900}
+.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;text-align:center}
+.kpis b{display:block;font-size:22px;font-weight:900}
+.kpis span{font-size:11.5px;font-weight:700;color:var(--muted);line-height:1.2;display:block}
+.advice{margin-top:12px;background:#f5f2ff;border-radius:14px;padding:10px 12px;font-weight:700;font-size:14.5px;line-height:1.5}
+.tblwrap{padding:8px;overflow-x:auto}
+.ptbl{border-collapse:collapse;width:100%;font-size:12.5px}
+.ptbl th{font-size:11px;color:var(--muted);text-align:left;padding:5px 4px;border-bottom:2px solid #eee}
+.ptbl td{padding:7px 3px;border-bottom:1px solid #f0edf7;font-weight:700;white-space:nowrap}
+.ptbl td:first-child{white-space:normal}
+.pct{border-radius:8px;padding:1px 6px;font-weight:900}
+.pct.g{background:#dcfce7;color:#166534}.pct.y{background:#fef3c7;color:#92400e}.pct.r{background:#ffe4e6;color:#9f1239}
+.pnote{color:#fff;opacity:.8;font-size:12.5px;font-weight:700;margin:8px 4px 0}
+.tro{padding:10px 0;border-bottom:1px solid #f0edf7}.tro:last-child{border-bottom:0}
+.tro-h{font-size:12px;font-weight:800;color:var(--muted)}
+.tro-q{font-weight:700;margin:4px 0;font-size:14.5px}
+.tro-a{font-size:14px;font-weight:700}.tro-a .x{color:var(--bad)}.tro-a .v{color:var(--ok)}
 </style>
 </head>
 <body>
@@ -207,8 +234,9 @@ const $=id=>document.getElementById(id);
 
 /* ================= zapis postępów ================= */
 const KEY='matmaQuestAmelia_v1';
-const S={coins:0,avatar:'🦊',owned:['🦊'],stars:{},sound:true,solved:0,streak:0,lastDay:''};
+const S={coins:0,avatar:'🦊',owned:['🦊'],stars:{},sound:true,solved:0,streak:0,lastDay:'',season:1,stats:{},log:[],trouble:[],statsSince:''};
 try{Object.assign(S,JSON.parse(localStorage.getItem(KEY)||'{}'))}catch(e){}
+if(!S.statsSince){const d=new Date();S.statsSince=`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`}
 function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
 
 /* ================= dźwięki ================= */
@@ -271,7 +299,7 @@ function genPot(){
       solution:`${P(a,3)} = ${a} · ${a} · ${a} = ${a*a} · ${a} = <b>${a**3}</b>`};
   }
   if(t<.7){
-    const a=R(3,9),e=pick([2,3]);
+    const a=R(4,9),e=pick([2,3]);
     const m=e===2?mc(`${a} · ${a}`,[`${a} · 2`,`${a} + ${a}`,`${a} · ${a} · ${a}`]):mc(`${a} · ${a} · ${a}`,[`${a} · 3`,`${a} + ${a} + ${a}`,`${a} · ${a}`]);
     return {key:'pm'+a+e,html:`Co oznacza zapis <b style="font-size:26px">${P(a,e)}</b>?`,...m,
       hints:[`Cyferka u góry mówi, <b>ile razy</b> liczba ${a} stoi w mnożeniu.`,`${e===2?'Dwa':'Trzy'} razy ${a}, połączone kropką mnożenia.`],
@@ -509,10 +537,250 @@ const WORLDS=[
    lesson:`<h3>Finałowa misja 👑</h3>12 zadań ze wszystkich światów, wymieszanych jak w prawdziwym sprawdzianie. Zdobądź 2 gwiazdki, żeby odblokować <b>Koronę Bossa</b> w sklepie!
    <div class="rule">⭐ Nie spiesz się. Podpowiedzi 💡 są dla ciebie — korzystaj śmiało.</div>`},
 ];
+/* ================= SEZON 2 — GENERATORY ================= */
+const plural=(n,f)=>{const a=Math.abs(n)%100,b=a%10;return n===1?f[0]:(b>=2&&b<=4&&(a<12||a>14))?f[1]:f[2]};
+const BOX='<span class="qbox">?</span>';
+const ORDER='Kolejność: 1) nawiasy 2) potęgi 3) mnożenie i dzielenie (od lewej) 4) dodawanie i odejmowanie (od lewej).';
+
+// 🎢 Kolejność działań
+function genKolej(){
+  const t=R(1,8);
+  const one=(key,expr,ans,hints,solution,bad,badMsg)=>({key,html:`Oblicz:<span class="big">${expr} = ?</span>`,fields:[{label:'Wynik =',ans}],
+    hints:[ORDER,...hints],trap:v=>v[0]===ans?null:(bad.includes(v[0])?badMsg:null),solution});
+  if(t===1){const a=R(2,40),b=R(3,9),c=R(3,9),ans=a+b*c;
+    return one('k1'+a+b+c,`${a} + ${b} · ${c}`,ans,[`Najpierw mnożenie: ${b} · ${c} = ?`,`${b} · ${c} = ${b*c}. Teraz ${a} + ${b*c}.`],
+      `${b} · ${c} = ${b*c}, potem ${a} + ${b*c} = <b>${ans}</b>`,[(a+b)*c],`Najpierw mnożenie, potem dodawanie! Ty najpierw dodałaś ${a} + ${b}.`)}
+  if(t===2){const b=R(3,9),c=R(3,9),a=b*c+R(5,40),ans=a-b*c;
+    return one('k2'+a+b+c,`${a} − ${b} · ${c}`,ans,[`Najpierw mnożenie: ${b} · ${c} = ?`,`${b} · ${c} = ${b*c}. Teraz ${a} − ${b*c}.`],
+      `${b} · ${c} = ${b*c}, potem ${a} − ${b*c} = <b>${ans}</b>`,[(a-b)*c],`Najpierw mnożenie, potem odejmowanie!`)}
+  if(t===3){const a=R(2,20),b=R(2,20),c=R(3,9),ans=(a+b)*c;
+    return one('k3'+a+b+c,`(${a} + ${b}) · ${c}`,ans,[`Nawias jest pierwszy: ${a} + ${b} = ?`,`${a} + ${b} = ${a+b}. Teraz ${a+b} · ${c}.`],
+      `${a} + ${b} = ${a+b}, potem ${a+b} · ${c} = <b>${ans}</b>`,[a+b*c],`Nawias zawsze pierwszy! Policz najpierw ${a} + ${b}.`)}
+  if(t===4){const c=R(2,9),k=R(2,9),b=c*k,a=k+R(5,60),ans=a-k;
+    return one('k4'+a+b+c,`${a} − ${b} : ${c}`,ans,[`Najpierw dzielenie: ${b} : ${c} = ?`,`${b} : ${c} = ${k}. Teraz ${a} − ${k}.`],
+      `${b} : ${c} = ${k}, potem ${a} − ${k} = <b>${ans}</b>`,a>b&&(a-b)%c===0?[(a-b)/c]:[],`Najpierw dzielenie, potem odejmowanie!`)}
+  if(t===5){const d=R(2,9),b=R(2,20),a=b+d,ans=d*d;
+    return one('k5'+a+b,`(${a} − ${b})<sup>2</sup>`,ans,[`Najpierw nawias: ${a} − ${b} = ?`,`${a} − ${b} = ${d}, a ${P(d,2)} = ${d} · ${d}.`],
+      `${a} − ${b} = ${d}, potem ${P(d,2)} = ${d} · ${d} = <b>${ans}</b>`,[d*2,a*a-b*b],`Najpierw nawias (${d}), a potem kwadrat: ${d} · ${d}.`)}
+  if(t===6){let a,b,c,d;do{a=R(3,9);b=R(3,9);c=R(2,6);d=R(2,6)}while(a*b<=c*d);const ans=a*b-c*d;
+    return one('k6'+a+b+c+d,`${a} · ${b} − ${c} · ${d}`,ans,[`Są dwa mnożenia — policz oba: ${a} · ${b} i ${c} · ${d}.`,`${a} · ${b} = ${a*b}, ${c} · ${d} = ${c*d}. Teraz odejmij.`],
+      `${a*b} − ${c*d} = <b>${ans}</b>`,[(a*b-c)*d],`Oba mnożenia najpierw, dopiero potem odejmowanie!`)}
+  if(t===7){const a=R(2,15),b=R(2,15),c=R(2,6),dd=R(3,(a+b)*c-1),ans=(a+b)*c-dd;
+    return one('k7'+a+b+c+dd,`(${a} + ${b}) · ${c} − ${dd}`,ans,[`Krok 1 — nawias: ${a} + ${b} = ${a+b}`,`Krok 2 — mnożenie: ${a+b} · ${c} = ${(a+b)*c}. Krok 3 — odejmij ${dd}.`],
+      `${a+b} · ${c} = ${(a+b)*c}, potem ${(a+b)*c} − ${dd} = <b>${ans}</b>`,[a+b*c-dd],`Najpierw nawias, potem mnożenie, na końcu odejmowanie.`)}
+  const a=R(12,40),b=R(2,9),c=R(2,9);
+  const v=pick([
+    [`${a} + ${b} · ${c}`,`${b} · ${c}`,[`${a} + ${b}`]],
+    [`(${a} + ${b}) · ${c}`,`${a} + ${b}`,[`${b} · ${c}`]],
+    [`${a} − ${b}<sup>2</sup>`,`${P(b,2)}`,[`${a} − ${b}`]],
+    [`${a*b} : ${b} · ${c}`,`${a*b} : ${b}`,[`${b} · ${c}`]],
+    [`${a} − ${b} + ${c}`,`${a} − ${b}`,[`${b} + ${c}`]],
+  ]);
+  const m=mc(v[1],v[2]);
+  return {key:'k8'+v[0],html:`Co liczysz <b>najpierw</b>?<span class="big">${v[0]}</span>`,...m,
+    hints:[ORDER,`Mnożenie i dzielenie są „równie ważne” — wtedy liczysz od lewej. To samo z dodawaniem i odejmowaniem.`],
+    solution:`Najpierw: <b>${v[1]}</b>`};
+}
+
+// 🏙️ Potęgi Pro
+function genPotPro(){
+  const t=R(1,6);
+  if(t===1){const n=R(2,6),ans=10**n;
+    return {key:'pp1'+n,html:`Oblicz:<span class="big">${P(10,n)} = ?</span>`,fields:[{label:`${P(10,n)} =`,ans}],
+      hints:[`${P(10,2)} = 10 · 10 = 100, ${P(10,3)} = 1000…`,`Potęga dziesiątki to jedynka i <b>tyle zer, ile wynosi wykładnik</b>: ${n}.`],
+      trap:v=>v[0]===10*n?`To jest 10 · ${n}. A ${P(10,n)} to jedynka i ${n} ${zer(n)}!`:null,solution:`${P(10,n)} = 1 i ${n} ${zer(n)} = <b>${fmt(ans)}</b>`}}
+  if(t===2){const n=R(11,20),ans=n*n;
+    return {key:'pp2'+n,html:`Oblicz:<span class="big">${P(n,2)} = ?</span>`,fields:[{label:`${P(n,2)} =`,ans}],
+      hints:[`${P(n,2)} = ${n} · ${n}`,`Rozbij: ${n} · ${n} = ${n} · 10 + ${n} · ${n-10}`,`${n*10} + ${n*(n-10)} = ?`],
+      trap:v=>v[0]===2*n?`To ${n} · 2. A ${P(n,2)} = ${n} · ${n}!`:null,solution:`${n} · 10 + ${n} · ${n-10} = ${n*10} + ${n*(n-10)} = <b>${ans}</b>`}}
+  if(t===3){const [b,e]=pick([[2,4],[2,5],[2,6],[3,3],[3,4],[4,3],[5,3],[6,3],[2,7],[1,9],[0,5]]),ans=b**e;
+    return {key:'pp3'+b+e,html:`Oblicz:<span class="big">${P(b,e)} = ?</span>`,fields:[{label:`${P(b,e)} =`,ans}],
+      hints:[`${P(b,e)} = ${Array(e).fill(b).join(' · ')}`,b>1?`Mnóż po kolei: ${Array.from({length:e},(_,i)=>b**(i+1)).slice(0,-1).join(' → ')} → ?`:`${b} pomnożone przez siebie zawsze daje ${b}!`],
+      trap:v=>v[0]===b*e&&b*e!==ans?`To ${b} · ${e}. Potęga to mnożenie ${b} przez siebie ${e} razy!`:null,solution:`${Array(e).fill(b).join(' · ')} = <b>${fmt(ans)}</b>`}}
+  if(t===4){const [b,e]=pick([[2,5],[2,6],[3,3],[3,4],[10,3],[10,5],[5,3],[4,3],[2,7],[10,6]]),val=b**e;
+    return {key:'pp4'+b+e,html:`Jaki jest wykładnik?<span class="big">${b}<sup>?</sup> = ${fmt(val)}</span>`,fields:[{label:'Wykładnik ? =',ans:e}],
+      hints:[`Mnóż ${b} · ${b} · ${b}… i licz, ile razy napisałaś ${b}, aż wyjdzie ${fmt(val)}.`,`${Array.from({length:e},(_,i)=>`${P(b,i+1)} = ${fmt(b**(i+1))}`).slice(0,-1).join(', ')}…`],
+      trap:v=>v[0]!==e&&v[0]>0&&v[0]<12?`${P(b,v[0])} = ${fmt(b**v[0])}, a potrzebujesz ${fmt(val)}.`:null,solution:`${P(b,e)} = ${fmt(val)}, więc wykładnik to <b>${e}</b>`}}
+  if(t===5){const [n,e]=pick([[4,2],[6,2],[7,2],[8,2],[9,2],[11,2],[12,2],[20,2],[30,2],[2,3],[3,3],[4,3],[5,3],[10,3]]),val=n**e;
+    return {key:'pp5'+n+e,html:`Jaka liczba pasuje?<span class="big">?<sup>${e}</sup> = ${fmt(val)}</span>`,fields:[{label:'? =',ans:n}],
+      hints:[`Szukasz liczby, która pomnożona przez siebie ${e===2?'(2 razy)':'(3 razy)'} da ${fmt(val)}.`,`Próbuj: ${[n-1,n,n+1].filter(x=>x>1&&x!==n).map(x=>`${P(x,e)} = ${fmt(x**e)}`).join(', ')}… a pomiędzy?`],
+      trap:v=>v[0]===n?null:(v[0]*e===val?`To ${fmt(val)} : ${e}. A tu szukamy liczby, która razy ona sama da ${fmt(val)}.`:(v[0]>0&&v[0]<=40?`Sprawdź: ${P(v[0],e)} = ${fmt(v[0]**e)}, a ma wyjść ${fmt(val)}.`:null)),
+      solution:`${P(n,e)} = ${Array(e).fill(n).join(' · ')} = ${fmt(val)}, więc ? = <b>${n}</b>`}}
+  const a=R(2,9),b=R(2,4),ans=a*a+b**3;
+  return {key:'pp6'+a+b,html:`Oblicz:<span class="big">${P(a,2)} + ${P(b,3)} = ?</span>`,fields:[{label:'Wynik =',ans}],
+    hints:[`Policz każdą potęgę osobno.`,`${P(a,2)} = ${a*a}, ${P(b,3)} = ${b} · ${b} · ${b} = ?`],
+    trap:v=>v[0]===2*a+3*b?`Potęgi to nie mnożenie przez wykładnik 😉`:null,solution:`${a*a} + ${b**3} = <b>${ans}</b>`};
+}
+
+// 🚌 Reszta w akcji
+function genResztaAkcja(){
+  const t=R(1,5);
+  if(t<=2){
+    const bus=t===1;const b=bus?R(8,20):R(4,8),q=R(3,9),r=R(1,b-1),N=b*q+r;
+    const html=bus?`Na wycieczkę jedzie <b>${N} uczniów</b>. Do jednego busa wchodzi <b>${b} ${plural(b,['osoba','osoby','osób'])}</b>. Ile busów trzeba zamówić?`
+                  :`Na urodziny Amelii przyjdzie <b>${N} gości</b>. Przy jednym stoliku mieszczą się <b>${b} ${plural(b,['osoba','osoby','osób'])}</b>. Ile stolików trzeba przygotować?`;
+    const what=bus?'busów':'stolików';
+    return {key:'ra'+t+N+b,html,fields:[{label:`Liczba ${what} =`,ans:q+1}],
+      hints:[`Podziel z resztą: ${N} : ${b} = ? r ?`,`${N} : ${b} = ${q} r ${r}. Zostaje ${r} ${plural(r,['osoba','osoby','osób'])} — co z ${r===1?'nią':'nimi'}?`],
+      trap:v=>v[0]===q?`Prawie! Zostaje ${r} ${plural(r,['osoba','osoby','osób'])} — ${r===1?'ona też musi':'oni też muszą'} się zmieścić. Potrzeba jeszcze jednego!`:null,
+      solution:`${N} : ${b} = ${q} r ${r}. ${q} pełnych + 1 dla pozostałych → <b>${q+1}</b>`};
+  }
+  if(t===3){const b=R(4,9),q=R(3,12),r=R(1,b-1),N=b*q+r;
+    return {key:'rb'+N+b,html:`Cukiernia upiekła <b>${N} ${plural(N,['babeczkę','babeczki','babeczek'])}</b>. Do pudełka wchodzi <b>${b}</b>. Ile <b>pełnych</b> pudełek można zapakować?`,fields:[{label:'Pełne pudełka =',ans:q}],
+      hints:[`Podziel z resztą: ${N} : ${b} = ? r ?`,`${N} : ${b} = ${q} r ${r}. Pudełko z ${r} ${plural(r,['babeczką','babeczkami','babeczkami'])} nie jest pełne!`],
+      trap:v=>v[0]===q+1?`Ostatnie pudełko miałoby tylko ${r} — nie jest pełne, więc go nie liczymy.`:null,
+      solution:`${N} : ${b} = ${q} r ${r} → <b>${q}</b> pełnych pudełek (zostaje ${r})`};
+  }
+  if(t===4){const b=R(15,60),q=R(2,9),r=R(1,b-1),N=b*q+r;
+    return {key:'rc'+N+b,html:`Masz <b>${N} ${plural(N,['diament','diamenty','diamentów'])} 💎</b>. Skórka w grze kosztuje <b>${b}</b>. Ile skórek kupisz i ile diamentów zostanie?`,
+      fields:[{label:'Skórki =',ans:q},{label:'Zostanie 💎 =',ans:r}],
+      hints:[`Ile razy ${b} zmieści się w ${N}?`,`${b} · ${q} = ${b*q}, a ${b} · ${q+1} = ${b*(q+1)} — za dużo!`,`Zostaje: ${N} − ${b*q} = ?`],
+      trap:v=>v[1]>=b?`Za ${v[1]} diamentów kupisz jeszcze jedną skórkę! Reszta musi być mniejsza niż ${b}.`:(v[0]*b+v[1]!==N?`Sprawdź: ${v[0]} · ${b} + ${v[1]} = ${v[0]*b+v[1]}, a masz ${N}.`:null),
+      solution:`${N} : ${b} = ${q} r ${r} → <b>${q} skórki/skórek</b>, zostaje <b>${r} 💎</b>`.replace(' skórki/skórek',' '+plural(q,['skórka','skórki','skórek']))};
+  }
+  const k=R(3,6),q=R(3,12),r=R(1,k-1),N=k*q+r;
+  return {key:'rd'+N+k,html:`<b>${N} ${plural(N,['naklejkę','naklejki','naklejek'])}</b> dzielimy po równo między <b>${k} ${plural(k,['przyjaciółkę','przyjaciółki','przyjaciółek'])}</b>. Ile dostanie każda i ile zostanie?`,
+    fields:[{label:'Każda dostanie =',ans:q},{label:'Zostanie =',ans:r}],
+    hints:[`Podziel z resztą: ${N} : ${k}`,multTable(k,N)],
+    trap:v=>v[1]>=k?`Zostało ${v[1]} — to wystarczy, żeby każda dostała jeszcze po jednej! Reszta < ${k}.`:null,
+    solution:`${N} : ${k} = ${q} r ${r} → każda <b>${q}</b>, zostaje <b>${r}</b>`};
+}
+
+// ⚖️ O ile? Ile razy?
+const ITEMS=[['naklejka','naklejki','naklejek'],['diament','diamenty','diamentów'],['lajk','lajki','lajków'],['karta','karty','kart'],['muszelka','muszelki','muszelek'],['subskrybent','subskrybentów','subskrybentów']];
+function genIleRazy(){
+  const [n1,n2]=shuffle(NAMES).slice(0,2),it=pick(ITEMS),f=n=>`${n} ${plural(n,it)}`;
+  const t=R(1,5);
+  const b=R(3,12),k=R(2,6),a=b*k;
+  if(t===1)return {key:'ir1'+a+b,html:`${n1} ma <b>${f(a)}</b>, a ${n2} ma <b>${f(b)}</b>.`,
+    fields:[{label:`O ile więcej ma ${n1}?`,ans:a-b},{label:`Ile razy więcej ma ${n1}?`,ans:k}],
+    hints:[`„O ile?” → odejmowanie. „Ile razy?” → dzielenie.`,`${a} − ${b} = ? &nbsp; i &nbsp; ${a} : ${b} = ?`],
+    trap:v=>v[0]===k&&v[1]===a-b?`Zamieniłaś! „O ile” to odejmowanie (${a} − ${b}), a „ile razy” to dzielenie (${a} : ${b}).`:(v[0]===a+b?`„O ile więcej” to odejmowanie, nie dodawanie.`:(v[1]===a-b?`„Ile razy” to dzielenie: ${a} : ${b}.`:null)),
+    solution:`O ile: ${a} − ${b} = <b>${a-b}</b>. Ile razy: ${a} : ${b} = <b>${k}</b>.`};
+  if(t===2){const d=R(5,40),m=R(10,60);const more=Math.random()<.5;
+    if(more)return {key:'ir2'+m+d,html:`${n1} ma ${f(m)}. ${n2} ma o <b>${d} więcej</b>. Ile ma ${n2}?`,fields:[{label:`${n2} ma`,ans:m+d}],
+      hints:[`„O ${d} więcej” → dodaj ${d}.`],trap:v=>v[0]===m-d?`„Więcej” → dodawanie: ${m} + ${d}.`:(v[0]===m*d?`„O ile” to dodawanie, nie mnożenie.`:null),solution:`${m} + ${d} = <b>${m+d}</b>`};
+    const mm=m+d;return {key:'ir3'+mm+d,html:`${n1} ma ${f(mm)}. ${n2} ma o <b>${d} mniej</b>. Ile ma ${n2}?`,fields:[{label:`${n2} ma`,ans:mm-d}],
+      hints:[`„O ${d} mniej” → odejmij ${d}.`],trap:v=>v[0]===mm+d?`„Mniej” → odejmowanie: ${mm} − ${d}.`:null,solution:`${mm} − ${d} = <b>${mm-d}</b>`};}
+  if(t===3)return {key:'ir4'+b+k,html:`${n1} ma ${f(b)}. ${n2} ma <b>${k} razy więcej</b>. Ile ma ${n2}?`,fields:[{label:`${n2} ma`,ans:a}],
+    hints:[`„${k} razy więcej” → pomnóż przez ${k}.`],trap:v=>v[0]===b+k?`„Razy” → mnożenie: ${b} · ${k}, a nie ${b} + ${k}.`:null,solution:`${b} · ${k} = <b>${a}</b>`};
+  if(t===4)return {key:'ir5'+a+k,html:`${n1} ma ${f(a)}. ${n2} ma <b>${k} razy mniej</b>. Ile ma ${n2}?`,fields:[{label:`${n2} ma`,ans:b}],
+    hints:[`„${k} razy mniej” → podziel przez ${k}.`],trap:v=>v[0]===a-k?`„Razy mniej” → dzielenie: ${a} : ${k}, a nie ${a} − ${k}.`:null,solution:`${a} : ${k} = <b>${b}</b>`};
+  const cOk=Math.random()<.5?`${n1} ma o ${a-b} więcej`:`${n1} ma ${k} razy więcej`;
+  const m=mc(cOk,shuffle([`${n1} ma o ${k} więcej`,`${n1} ma ${a-b} razy więcej`,`${n1} ma o ${a+b} więcej`]).slice(0,2));
+  return {key:'ir6'+a+b+cOk.length,html:`${n1} ma <b>${f(a)}</b>, a ${n2} ma <b>${f(b)}</b>. Które zdanie jest prawdziwe?`,...m,
+    hints:[`Policz: ${a} − ${b} = ${a-b} („o ile”) oraz ${a} : ${b} = ${k} („ile razy”).`],solution:`<b>${cOk}</b> (${a} − ${b} = ${a-b}, ${a} : ${b} = ${k})`};
+}
+
+// 🔍 Detektyw podzielności
+const DRULE={2:'ostatnia cyfra jest parzysta (0, 2, 4, 6, 8)',5:'ostatnia cyfra to 0 albo 5',10:'ostatnia cyfra to 0',3:'suma cyfr dzieli się przez 3',9:'suma cyfr dzieli się przez 9'};
+const dsum=n=>String(n).split('').reduce((s,c)=>s+ +c,0);
+function genPodziel(){
+  const t=R(1,4),d=pick([2,5,10,3,9,3,9]);
+  const multOf=()=>{let x;do{x=R(100,9999)}while(x%d);return x};
+  const notOf=()=>{let x;do{x=R(100,9999);if(d===9&&Math.random()<.6)x=x-x%3}while(x%d===0||x<100);return x};
+  if(t===1){const c=multOf();const ws=[];while(ws.length<3){const w=notOf();if(!ws.includes(w))ws.push(w)}
+    const m=mc(String(c),ws.map(String));
+    return {key:'d1'+c+d,html:`Która liczba jest podzielna przez <b>${d}</b>?`,...m,
+      hints:[`Cecha podzielności przez ${d}: ${DRULE[d]}.`,d===3||d===9?`Policz sumę cyfr każdej liczby, np. ${ws[0]}: ${String(ws[0]).split('').join(' + ')} = ${dsum(ws[0])}.`:`Patrz tylko na ostatnią cyfrę!`],
+      trap:(v,ch)=>ch!==m.correct&&d===9&&+m.choices[ch]%3===0?`Ta liczba dzieli się przez 3, ale nie przez 9 — suma cyfr ${dsum(+m.choices[ch])} nie dzieli się przez 9.`:null,
+      solution:`<b>${c}</b> — ${d===3||d===9?`suma cyfr ${dsum(c)} dzieli się przez ${d}`:DRULE[d]}`}}
+  if(t===2){const tr=Math.random()<.5,N=tr?multOf():notOf();
+    return {key:'d2'+N+d,html:`Liczba <b>${N}</b> jest podzielna przez <b>${d}</b>.`,choices:['Prawda ✅','Fałsz ❌'],correct:tr?0:1,
+      hints:[`Cecha podzielności przez ${d}: ${DRULE[d]}.`,d===3||d===9?`Suma cyfr: ${String(N).split('').join(' + ')} = ${dsum(N)}`:`Ostatnia cyfra: ${N%10}`],
+      solution:`${d===3||d===9?`Suma cyfr = ${dsum(N)}`:`Ostatnia cyfra = ${N%10}`} → <b>${tr?'prawda':'fałsz'}</b>`}}
+  if(t===3){const dd=pick([3,9]);let pre,post,valid;
+    do{pre=R(1,99);post=R(0,99);valid=[...Array(10).keys()].filter(x=>(dsum(pre)+x+dsum(post))%dd===0)}while(!valid.length||valid.length>4);
+    const ok=pick(valid),wr=shuffle([...Array(10).keys()].filter(x=>!valid.includes(x))).slice(0,3);
+    const m=mc(String(ok),wr.map(String));const shown=`${pre}<span class="qbox">?</span>${String(post).padStart(2,'0')}`;
+    return {key:'d3'+pre+post+dd,html:`Jaką cyfrę wstawić, żeby liczba dzieliła się przez <b>${dd}</b>?<span class="big">${shown}</span>`,...m,
+      hints:[`Przez ${dd}: ${DRULE[dd]}.`,`Suma znanych cyfr: ${dsum(pre)+dsum(post)}. Ile trzeba dodać, żeby dzieliło się przez ${dd}?`],
+      solution:`${dsum(pre)+dsum(post)} + ${ok} = ${dsum(pre)+dsum(post)+ok} — dzieli się przez ${dd} → <b>${ok}</b>`}}
+  const dd=pick([3,9]),tr=Math.random()<.5;let N;do{N=R(1000,99999)}while((N%dd===0)!==tr);
+  return {key:'d4'+N+dd,html:`Sprawdź liczbę <b>${fmt(N)}</b>.`,fields:[{label:'Suma cyfr =',ans:dsum(N)}],
+    choiceLabel:`Czy dzieli się przez ${dd}?`,choices:['Tak ✅','Nie ❌'],correct:tr?0:1,
+    hints:[`Dodaj wszystkie cyfry: ${String(N).split('').join(' + ')}`,`Przez ${dd}: ${DRULE[dd]}.`],
+    trap:(v,c)=>v[0]===dsum(N)&&c!==(tr?0:1)?`Suma ${dsum(N)} jest dobra! Czy ${dsum(N)} dzieli się przez ${dd}?`:null,
+    solution:`Suma cyfr = ${dsum(N)} → ${tr?'dzieli się':'nie dzieli się'} przez ${dd} → <b>${tr?'Tak':'Nie'}</b>`};
+}
+
+// 🧩 Tajemnicze okienko
+function genOkienko(){
+  const t=R(1,6);
+  const box=(key,html,ans,hints,check,solution)=>({key,html:`Jaka liczba kryje się w okienku?<span class="big">${html}</span>`,fields:[{label:'? =',ans}],hints,
+    trap:v=>v[0]===ans?null:check(v[0]),solution});
+  if(t<=3){const d=R(2,9),k=R(0,2),e=R(2,9),m=R(0,2),b=d*10**k,x=e*10**m,c=x*b;
+    if(t===1)return box('o1'+b+c,`${BOX} · ${fmt(b)} = ${fmt(c)}`,x,[`Odwrotne działanie: ? = ${fmt(c)} : ${fmt(b)}`,`Zamroź zera ❄️ i podziel.`],
+      v=>`Sprawdź: ${fmt(v)} · ${fmt(b)} = ${fmt(v*b)}, a ma wyjść ${fmt(c)}.`,`${fmt(c)} : ${fmt(b)} = <b>${fmt(x)}</b> (bo ${fmt(x)} · ${fmt(b)} = ${fmt(c)})`);
+    if(t===2)return box('o2'+c+x,`${fmt(c)} : ${BOX} = ${fmt(x)}`,b,[`Odwrotne działanie: ? = ${fmt(c)} : ${fmt(x)}`,`Sprawdzaj mnożeniem: ? · ${fmt(x)} = ${fmt(c)}`],
+      v=>`Sprawdź: ${fmt(v)} · ${fmt(x)} = ${fmt(v*x)}, a powinno być ${fmt(c)}.`,`${fmt(c)} : ${fmt(x)} = <b>${fmt(b)}</b>`);
+    return box('o3'+b+x,`${BOX} : ${fmt(b)} = ${fmt(x)}`,c,[`Odwrotnością dzielenia jest mnożenie: ? = ${fmt(x)} · ${fmt(b)}`],
+      v=>`Sprawdź: ${fmt(x)} · ${fmt(b)} = ? To jest liczba w okienku.`,`${fmt(x)} · ${fmt(b)} = <b>${fmt(c)}</b>`);}
+  const b=R(120,980),c=R(200,2500);
+  if(t===4)return box('o4'+b+c,`${BOX} − ${b} = ${fmt(c)}`,b+c,[`Odwrotnością odejmowania jest dodawanie: ? = ${fmt(c)} + ${b}`],
+    v=>v===c-b?`Odwrotnie do odejmowania jest DODAWANIE: ${fmt(c)} + ${b}.`:`Sprawdź: ${fmt(v)} − ${b} = ${fmt(v-b)}, a ma wyjść ${fmt(c)}.`,`${fmt(c)} + ${b} = <b>${fmt(b+c)}</b>`);
+  if(t===5){const a=b+c;return box('o5'+a+c,`${fmt(a)} − ${BOX} = ${fmt(c)}`,b,[`Ile trzeba odjąć od ${fmt(a)}, żeby zostało ${fmt(c)}? ? = ${fmt(a)} − ${fmt(c)}`],
+    v=>v===a+c?`Tu odejmujesz: ${fmt(a)} − ${fmt(c)}.`:`Sprawdź: ${fmt(a)} − ${fmt(v)} = ${fmt(a-v)}, a ma wyjść ${fmt(c)}.`,`${fmt(a)} − ${fmt(c)} = <b>${b}</b>`)}
+  const s=b+c;return box('o6'+b+s,`${BOX} + ${b} = ${fmt(s)}`,c,[`Odwrotnością dodawania jest odejmowanie: ? = ${fmt(s)} − ${b}`],
+    v=>v===s+b?`Odwrotnie do dodawania jest ODEJMOWANIE: ${fmt(s)} − ${b}.`:`Sprawdź: ${fmt(v)} + ${b} = ${fmt(v+b)}, a ma wyjść ${fmt(s)}.`,`${fmt(s)} − ${b} = <b>${fmt(c)}</b>`);
+}
+
+WORLDS.forEach(w=>w.season=1);
+WORLDS.push(
+  {id:'kolej',season:2,name:'Kolejka Kolejności',emoji:'🎢',c1:'#14b8a6',c2:'#0f766e',tag:'Nawiasy, potęgi, mnożenie, dodawanie',gen:genKolej,
+   lesson:`<h3>Kto wsiada pierwszy? 🎢</h3>W działaniach jest kolejka — tak jak na rollercoasterze:
+   <div class="ex">1️⃣ nawiasy ( )<br>2️⃣ potęgi<br>3️⃣ mnożenie i dzielenie<br>4️⃣ dodawanie i odejmowanie</div>
+   <div class="ex">5 + 3 · 4 = 5 + 12 = 17<br>(5 + 3) · 4 = 8 · 4 = 32</div>
+   <div class="trap">🕵️ Pułapka: <span class="x">5 + 3 · 4 = 32 ✗</span> (najpierw dodane)<br><span class="v">17 ✓</span></div>
+   <div class="rule">⭐ Gdy działania są „równie ważne” (np. dzielenie i mnożenie), liczysz <b>od lewej</b>.</div>`},
+  {id:'potpro',season:2,name:'Wieża Potęg Pro',emoji:'🗼',c1:'#d946ef',c2:'#86198f',tag:'Potęgi poziom 2',gen:genPotPro,
+   lesson:`<h3>Poziom PRO 🗼</h3><div class="ex">10<sup>4</sup> = 10 000 (jedynka i 4 zera)</div>
+   <div class="ex">2<sup>5</sup> = 2·2·2·2·2 = 32</div>
+   <div class="ex">13<sup>2</sup> = 13·10 + 13·3 = 130 + 39 = 169</div>
+   <h3>Zagadki odwrotne 🔄</h3><div class="ex">2<sup>?</sup> = 16 → 2·2·2·2 → ? = 4</div><div class="ex">?<sup>2</sup> = 49 → 7·7 → ? = 7</div>
+   <div class="rule">⭐ Małą cyferkę u góry nazywamy <b>wykładnikiem</b>, a dużą liczbę — <b>podstawą</b>.</div>`},
+  {id:'reszta2',season:2,name:'Reszta w Akcji',emoji:'🚌',c1:'#fb923c',c2:'#c2410c',tag:'Reszta w zadaniach z życia',gen:genResztaAkcja,
+   lesson:`<h3>Co zrobić z resztą? 🚌</h3>Ta sama reszta, a odpowiedź zależy od pytania!
+   <div class="ex">50 uczniów, bus na 12 osób: 50 : 12 = 4 r 2<br>Ile busów? → <b>5</b> (2 osoby też jadą!)</div>
+   <div class="ex">50 babeczek, pudełko na 12: 50 : 12 = 4 r 2<br>Ile PEŁNYCH pudełek? → <b>4</b></div>
+   <div class="rule">⭐ Zawsze przeczytaj pytanie jeszcze raz: czy trzeba zmieścić <b>wszystkich</b>, czy liczymy tylko <b>pełne</b>?</div>`},
+  {id:'ilerazy',season:2,name:'O ile? Ile razy?',emoji:'⚖️',c1:'#84cc16',c2:'#3f6212',tag:'Porównywanie różnicowe i ilorazowe',gen:genIleRazy,
+   lesson:`<h3>Dwa magiczne pytania ⚖️</h3>Werka ma 24 naklejki, Zuza ma 6.
+   <div class="ex">O ile więcej? → 24 − 6 = <b>18</b></div><div class="ex">Ile razy więcej? → 24 : 6 = <b>4</b></div>
+   <div class="rule">⭐ „o … więcej” → dodaj &nbsp; „o … mniej” → odejmij<br>⭐ „… razy więcej” → pomnóż &nbsp; „… razy mniej” → podziel</div>`},
+  {id:'podziel',season:2,name:'Detektyw Podzielności',emoji:'🔍',c1:'#3b82f6',c2:'#1e3a8a',tag:'Cechy podzielności',gen:genPodziel,
+   lesson:`<h3>Supermoce detektywa 🔍</h3>Bez dzielenia sprawdzisz, czy liczba dzieli się bez reszty:
+   <div class="ex">przez 2 → ostatnia cyfra parzysta<br>przez 5 → ostatnia cyfra 0 lub 5<br>przez 10 → ostatnia cyfra 0</div>
+   <div class="ex">przez 3 → suma cyfr dzieli się przez 3<br>przez 9 → suma cyfr dzieli się przez 9</div>
+   <div class="ex">4 572: 4+5+7+2 = 18 → dzieli się przez 3 i przez 9 ✔</div>
+   <div class="trap">🕵️ Pułapka: 1 254 → suma 12 → dzieli się przez 3, ale <span class="x">NIE przez 9</span></div>`},
+  {id:'okienko',season:2,name:'Tajemnicze Okienko',emoji:'🧩',c1:'#06b6d4',c2:'#155e75',tag:'Brakująca liczba',gen:genOkienko,
+   lesson:`<h3>Co się kryje w okienku? 🧩</h3>Użyj działania <b>odwrotnego</b>:
+   <div class="ex">? · 40 = 2 800 → ? = 2 800 : 40 = 70</div>
+   <div class="ex">? − 300 = 500 → ? = 500 + 300 = 800</div>
+   <div class="ex">? + 250 = 900 → ? = 900 − 250 = 650</div>
+   <div class="rule">⭐ Na końcu wstaw swoją liczbę do okienka i sprawdź, czy się zgadza!</div>`},
+  {id:'boss2',season:2,name:'Mega Obby 2 — Boss',emoji:'🐲',c1:'#0f172a',c2:'#831843',tag:'Mieszanka Sezonu 2 · 12 zadań',gen:null,
+   lesson:`<h3>Finał Sezonu 2 🐲</h3>12 zadań ze wszystkich nowych światów. Zdobądź 2 gwiazdki, a w sklepie czeka <b>Puchar Mistrzyni 🏆</b>!
+   <div class="rule">⭐ Czytaj pytania dwa razy — w tym sezonie liczy się spryt!</div>`}
+);
+
 const W=id=>WORLDS.find(w=>w.id===id);
+const seasonOf=w=>w.season||1;
 
 /* ================= SKLEP ================= */
-const SHOP=[['🦊',0],['🐱',40],['🐼',60],['🐸',60],['❄️',80],['🦄',100],['🧚',120],['🧜‍♀️',120],['👸',150],['🧝‍♀️',150],['🐉',200],['🤖',200],['🦸‍♀️',250],['🌈',300],['🐲',350],['👑','boss']];
+const SHOP=[['🦊',0],['🐱',40],['🐼',60],['🐸',60],['❄️',80],['🦋',90],['🦄',100],['🐙',110],['🧚',120],['🧜‍♀️',120],['🦩',130],['👸',150],['🧝‍♀️',150],['🦖',180],['🐉',200],['🤖',200],['🧞‍♀️',220],['🦸‍♀️',250],['🪐',280],['🌈',300],['🐲',350],['👑','boss'],['🏆','boss2']];
+const BOSSNAME={boss:'Mega Obby',boss2:'Mega Obby 2'};
+
+/* ================= STATYSTYKI ================= */
+const today=()=>{const d=new Date();return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`};
+const plDate=s=>s?s.split('-').reverse().join('.'):'—';
+function stat(id){return S.stats[id]=S.stats[id]||{rounds:0,q:0,first:0,wrong:0,hints:0,sols:0,last:''}}
+function toText(h){const SUP={0:'⁰',1:'¹',2:'²',3:'³',4:'⁴',5:'⁵',6:'⁶',7:'⁷',8:'⁸',9:'⁹','?':'ˀ'};
+  h=String(h).replace(/<sup>([^<]*)<\/sup>/g,(m,x)=>[...x].map(c=>SUP[c]||c).join('')).replace(/<br\s*\/?>/g,' ');
+  const d=document.createElement('div');d.innerHTML=h;return d.textContent.replace(/\s+/g,' ').trim()}
+function ansText(q,vals,choice){const p=(q.fields||[]).map((f,i)=>`${toText(f.label)} ${vals[i]===''?'?':fmt(vals[i])}`);if(q.choices&&choice!=null)p.push(toText(q.choices[choice]));return p.join(' · ')}
+function okText(q){const p=(q.fields||[]).map(f=>`${toText(f.label)} ${fmt(f.ans)}`);if(q.choices)p.push(toText(q.choices[q.correct]));return p.join(' · ')}
 
 /* ================= EKRANY ================= */
 const GREETS=[
@@ -523,6 +791,12 @@ const GREETS=[
   'Dziś testujemy: czy reszta może być większa od dzielnika? Spoiler: NIE 🧱',
   'Jak coś nie wychodzi — kliknij 💡. Nawet youtuberki pytają o radę! ✨',
 ];
+const GREETS2=[
+  '<b>Sezon 2</b> wystartował! 🎢 Nowe światy, nowe zagadki, nowe awatary!',
+  'Wiesz, jak bez dzielenia sprawdzić, czy liczba dzieli się przez 9? Detektyw Podzielności zdradzi sekret 🔍',
+  '„O ile?” czy „ile razy?” — to dwa różne pytania! Sprawdź świat ⚖️',
+  'Pokonaj <b>Mega Obby 2</b> i zdobądź Puchar Mistrzyni 🏆',
+];
 function topBar(){
   const tot=Object.values(S.stars).reduce((a,b)=>a+b,0);
   return `<div class="top"><div class="av">${S.avatar}</div><div class="hello">Amelia<small>Matma Quest</small></div>
@@ -530,21 +804,27 @@ function topBar(){
    <button class="iconbtn" onclick="shop()">🛒</button><button class="iconbtn" onclick="S.sound=!S.sound;save();home()">${S.sound?'🔊':'🔇'}</button></div>`;
 }
 function starStr(n){return [1,2,3].map(i=>`<span class="${i<=n?'':'off'}">⭐</span>`).join('')}
-function bossOpen(){return WORLDS.filter(w=>w.id!=='boss'&&(S.stars[w.id]||0)>=1).length}
+function bossOpen(se){return WORLDS.filter(w=>seasonOf(w)===se&&w.gen&&(S.stars[w.id]||0)>=1).length}
+const s2Open=()=>bossOpen(1)>=4;
+function setSeason(n){if(n===2&&!s2Open()){sBad();toast(`🔒 Zdobądź gwiazdkę w 4 światach Sezonu 1 (masz ${bossOpen(1)}/4)`);return}S.season=n;save();sTap();home()}
 function home(){
   run=null;
+  const se=S.season===2&&s2Open()?2:1;
+  const greet=se===2?pick(GREETS2):(s2Open()&&!WORLDS.some(w=>seasonOf(w)===2&&S.stars[w.id])?'Nowość! Odblokowałaś <b>Sezon 2</b> — 6 nowych światów czeka! Kliknij zakładkę powyżej ✨':pick(GREETS));
   app.innerHTML=`<div class="home">${topBar()}
    <div class="logo"><h1>Matma <span>Quest</span></h1><p>Wybierz świat i zbieraj gwiazdki!</p>${S.streak>1?`<span class="streak">🔥 Seria: ${S.streak} dni z rzędu</span>`:''}</div>
-   <div class="bubble"><div class="m">🧚</div><div>${pick(GREETS)}</div></div>
-   <div class="worlds">${WORLDS.map(w=>{
-     const lock=w.id==='boss'&&bossOpen()<3;
-     return `<button class="wcard ${w.id==='boss'?'boss':''} ${lock?'locked':''}" style="--wc:${w.c1};--wc2:${w.c2}" onclick="openWorld('${w.id}')">
+   <div class="tabs"><button class="tab ${se===1?'on':''}" onclick="setSeason(1)">Sezon 1</button><button class="tab ${se===2?'on':''}" onclick="setSeason(2)">Sezon 2 ${s2Open()?'<span class="new">NOWY</span>':'🔒'}</button></div>
+   <div class="bubble"><div class="m">🧚</div><div>${greet}</div></div>
+   <div class="worlds">${WORLDS.filter(w=>seasonOf(w)===se).map(w=>{
+     const lock=!w.gen&&bossOpen(se)<3;
+     return `<button class="wcard ${!w.gen?'boss':''} ${lock?'locked':''}" style="--wc:${w.c1};--wc2:${w.c2}" onclick="openWorld('${w.id}')">
       <div class="we">${w.emoji}</div><div><div class="wn">${w.name}</div><div class="wt">${w.tag}</div><div class="wst">${starStr(S.stars[w.id]||0)}</div></div>${lock?'<span class="lock">🔒</span>':''}</button>`}).join('')}</div>
-   <div class="foot">Rozwiązane zadania: ${S.solved} 💪<br>Ćwiczymy to, co sprawiło kłopot na sprawdzianie „Liczby i działania”.</div></div>`;
+   <div class="foot">Rozwiązane zadania: ${S.solved} 💪<br>${se===1?'Ćwiczymy to, co sprawiło kłopot na sprawdzianie „Liczby i działania”.':'Sezon 2: kolejne umiejętności z 5 klasy.'}
+   <br><button class="parentbtn" onclick="parentGate()">👨‍👧 Dla rodzica</button></div></div>`;
 }
 function openWorld(id){
   const w=W(id);
-  if(id==='boss'&&bossOpen()<3){sBad();toast(`🔒 Zdobądź gwiazdkę w 3 światach, żeby odblokować Bossa (masz ${bossOpen()}/3)`);return}
+  if(!w.gen&&bossOpen(seasonOf(w))<3){sBad();toast(`🔒 Zdobądź gwiazdkę w 3 światach tego sezonu, żeby odblokować Bossa (masz ${bossOpen(seasonOf(w))}/3)`);return}
   sTap();
   app.innerHTML=`<div class="lesson" style="--wc:${w.c1};--wc2:${w.c2}"><button class="back" onclick="home()">← Mapa</button>
    <div class="lhead"><div class="we">${w.emoji}</div><h2>${w.name}</h2><p>${w.tag}</p></div>
@@ -555,20 +835,68 @@ function openWorld(id){
 function shop(){
   sTap();
   app.innerHTML=`<div class="home">${topBar()}<div class="logo"><h1>Sklep <span>awatarów</span></h1><p>Wydaj swoje 💎 na nowego bohatera!</p></div>
-   <div class="shopgrid">${SHOP.map(([e,p])=>{const own=S.owned.includes(e);const bossItem=p==='boss';
-     const label=S.avatar===e?'✓ Twój':own?'Wybierz':bossItem?'🏆 Boss 2⭐':`💎 ${p}`;
-     const can=own||(!bossItem&&S.coins>=p)||(bossItem&&(S.stars.boss||0)>=2);
+   <div class="shopgrid">${SHOP.map(([e,p])=>{const own=S.owned.includes(e);const bossItem=typeof p==='string'&&p!=='0';
+     const label=S.avatar===e?'✓ Twój':own?'Wybierz':bossItem?`🏆 ${p==='boss'?'Boss':'Boss 2'} 2⭐`:`💎 ${p}`;
+     const can=own||(!bossItem&&S.coins>=p)||(bossItem&&(S.stars[p]||0)>=2);
      return `<button class="sitem ${S.avatar===e?'on':''} ${can?'':'no'}" onclick="buy('${e}')"><div class="e">${e}</div><div class="p">${label}</div></button>`}).join('')}</div>
    <button class="bigbtn alt" style="margin-top:20px" onclick="home()">← Wróć na mapę</button></div>`;
 }
 function buy(e){
   const [,p]=SHOP.find(x=>x[0]===e);
   if(S.owned.includes(e)){S.avatar=e;sTap()}
-  else if(p==='boss'){if((S.stars.boss||0)>=2){S.owned.push(e);S.avatar=e;sWin();confetti(['👑','⭐'])}else{sBad();toast('Zdobądź 2 ⭐ w Mega Obby, żeby dostać koronę!');return}}
+  else if(typeof p==='string'){if((S.stars[p]||0)>=2){S.owned.push(e);S.avatar=e;sWin();confetti([e,'⭐'])}else{sBad();toast(`Zdobądź 2 ⭐ w ${BOSSNAME[p]}, żeby to odblokować!`);return}}
   else if(S.coins>=p){S.coins-=p;S.owned.push(e);S.avatar=e;sWin();confetti([e,'✨'])}
   else{sBad();toast(`Brakuje ci ${p-S.coins} 💎. Rozwiąż jeszcze kilka zadań!`);return}
   save();shop();
 }
+
+/* ================= PANEL RODZICA ================= */
+function parentGate(){
+  const m=document.createElement('div');m.className='modal';
+  m.innerHTML=`<div class="card" style="text-align:center"><div style="font-size:40px">👨‍👧</div><h3 style="margin:6px 0">Panel dla rodzica</h3>
+   <p style="font-weight:700;color:var(--muted);margin:0 0 6px">Przytrzymaj przycisk przez 2 sekundy.</p>
+   <button class="holdbtn" id="hold"><span id="holdfill"></span><b>Przytrzymaj</b></button>
+   <button class="bigbtn alt" onclick="this.closest('.modal').remove()">Anuluj</button></div>`;
+  document.body.appendChild(m);
+  const b=$('hold'),fill=$('holdfill');let tm;
+  const start=e=>{e.preventDefault();fill.style.transition='width 2s linear';fill.style.width='100%';tm=setTimeout(()=>{m.remove();parent()},2000)};
+  const stop=()=>{clearTimeout(tm);fill.style.transition='none';fill.style.width='0'};
+  b.addEventListener('pointerdown',start);['pointerup','pointerleave','pointercancel'].forEach(ev=>b.addEventListener(ev,stop));
+}
+function pctCls(p){return p==null?'':p>=80?'g':p>=60?'y':'r'}
+function parent(){
+  const ws=WORLDS.filter(w=>w.gen);
+  const tot=ws.reduce((a,w)=>{const s=stat(w.id);a.q+=s.q;a.first+=s.first;a.hints+=s.hints;a.sols+=s.sols;return a},{q:0,first:0,hints:0,sols:0});
+  const rounds=WORLDS.reduce((a,w)=>a+stat(w.id).rounds,0);
+  const tp=tot.q?Math.round(100*tot.first/tot.q):null;
+  const weak=ws.filter(w=>{const s=stat(w.id);return s.q>=5&&100*s.first/s.q<70});
+  const untouched=ws.filter(w=>stat(w.id).q===0);
+  const strong=ws.filter(w=>{const s=stat(w.id);return s.q>=8&&100*s.first/s.q>=85});
+  const row=w=>{const s=stat(w.id),p=s.q?Math.round(100*s.first/s.q):null;
+    return `<tr><td>${w.emoji} ${w.name}</td><td>${s.q||'—'}</td><td><span class="pct ${pctCls(p)}">${p==null?'—':p+'%'}</span></td><td>${s.q?(s.hints/s.q).toFixed(1):'—'}</td><td>${s.sols||0}</td><td>${s.last?plDate(s.last).slice(0,5):'—'}</td></tr>`};
+  const table=se=>`<table class="ptbl"><tr><th>Świat</th><th>Zad.</th><th>Dobrze</th><th>💡/zad.</th><th>Rozw.</th><th>Ostatnio</th></tr>${ws.filter(w=>seasonOf(w)===se).map(row).join('')}</table>`;
+  app.innerHTML=`<div class="home parent"><button class="back" onclick="home()">← Wróć do gry</button>
+   <div class="logo"><h1>Panel <span>rodzica</span></h1><p>Statystyki zbierane od ${plDate(S.statsSince)}</p></div>
+   <div class="card">
+     <div class="kpis"><div><b>${tot.q}</b><span>zadań</span></div><div><b class="pct ${pctCls(tp)}">${tp==null?'—':tp+'%'}</b><span>dobrze za 1. razem</span></div><div><b>${rounds}</b><span>rund</span></div><div><b>${tot.sols}</b><span>podejrzanych rozwiązań</span></div></div>
+     <div class="advice">${!tot.q?'Brak danych — statystyki pojawią się po pierwszych zadaniach rozwiązanych w tej wersji gry.':
+       `${weak.length?`⚠️ <b>Warto powtórzyć:</b> ${weak.map(w=>w.name).join(', ')}<br>`:''}${strong.length?`✅ <b>Opanowane:</b> ${strong.map(w=>w.name).join(', ')}<br>`:''}${untouched.length?`⏳ <b>Jeszcze nie ćwiczone:</b> ${untouched.map(w=>w.name).join(', ')}`:''}`}</div>
+   </div>
+   <h3 class="ph">Sezon 1 — błędy ze sprawdzianu</h3><div class="card tblwrap">${table(1)}</div>
+   <h3 class="ph">Sezon 2 — nowe umiejętności</h3><div class="card tblwrap">${table(2)}</div>
+   <p class="pnote">„Dobrze” = poprawnie za pierwszym podejściem, bez podglądania rozwiązania. Kolory: zielony ≥ 80%, żółty 60–79%, czerwony &lt; 60%.</p>
+   <h3 class="ph">Zadania, które sprawiły kłopot</h3>
+   <div class="card">${S.trouble.length?S.trouble.slice(0,25).map(t=>{const w=W(t.w)||{emoji:'',name:''};
+     return `<div class="tro"><div class="tro-h">${w.emoji} ${w.name} · ${plDate(t.d)}${t.sol?' · <span class="pct r">podejrzała rozwiązanie</span>':''}${t.hints?` · 💡×${t.hints}`:''}</div>
+      <div class="tro-q">${t.q}</div><div class="tro-a"><span class="x">Jej odpowiedź: ${t.bad}</span><br><span class="v">Poprawnie: ${t.ok}</span></div></div>`}).join(''):'<p style="margin:0;font-weight:700">Brak — wszystkie zadania poszły gładko (albo jeszcze nie grała w tej wersji).</p>'}</div>
+   <h3 class="ph">Ostatnie rundy</h3>
+   <div class="card">${S.log.length?`<table class="ptbl"><tr><th>Data</th><th>Świat</th><th>Wynik</th><th>Gw.</th><th>💡</th><th>Rozw.</th></tr>${S.log.slice(0,20).map(l=>{const w=W(l.w)||{emoji:'',name:''};
+     return `<tr><td>${plDate(l.d).slice(0,5)}</td><td>${w.emoji} ${w.name}</td><td>${l.p}/${l.n}</td><td>${'★'.repeat(l.st)}</td><td>${l.h}</td><td>${l.s}</td></tr>`}).join('')}</table>`:'<p style="margin:0;font-weight:700">Brak rozegranych rund w tej wersji.</p>'}</div>
+   <button class="bigbtn alt" style="margin-top:18px" onclick="resetStats()">Wyzeruj statystyki (gwiazdki zostają)</button>
+   <button class="bigbtn" onclick="home()">← Wróć do gry</button></div>`;
+  scrollTo(0,0);
+}
+function resetStats(){if(!confirm('Wyzerować statystyki? Gwiazdki, diamenty i awatary zostaną.'))return;S.stats={};S.log=[];S.trouble=[];S.statsSince=today();save();parent()}
 
 /* ================= GRA ================= */
 let run=null;
@@ -577,18 +905,18 @@ const OOPS=['Oof! Spróbuj jeszcze raz 💪','Prawie! Jeszcze raz 🙂','Hmm, co
 
 function startRun(id){
   const w=W(id);
-  run={w,n:id==='boss'?12:8,i:0,perfect:0,coins:0,res:[],seen:new Set()};
+  run={w,n:w.gen?8:12,i:0,perfect:0,coins:0,res:[],seen:new Set(),hTot:0,sTot:0};
   newQ();
 }
 function newQ(){
   let gen=run.w.gen,from=null;
   let q;
   for(let t=0;t<20;t++){
-    if(run.w.id==='boss'){from=pick(WORLDS.filter(x=>x.gen));gen=from.gen}
+    if(!run.w.gen){from=pick(WORLDS.filter(x=>x.gen&&seasonOf(x)===seasonOf(run.w)));gen=from.gen}
     q=gen();if(!run.seen.has(q.key))break;
   }
   run.seen.add(q.key);q.from=from;
-  Object.assign(run,{q,vals:(q.fields||[]).map(()=>''),active:0,choice:null,attempts:0,hintN:0,sol:false,answered:false});
+  Object.assign(run,{q,vals:(q.fields||[]).map(()=>''),active:0,choice:null,attempts:0,hintN:0,sol:false,answered:false,firstWrong:null});
   renderPlay();
 }
 function trackHtml(){
@@ -654,7 +982,11 @@ function check(){
     const gain=run.sol?0:(run.attempts===0&&run.hintN===0?10:5);
     if(perfect)run.perfect++;
     run.res[run.i]=perfect;
-    S.coins+=gain;S.solved++;run.coins+=gain;save();
+    S.coins+=gain;S.solved++;run.coins+=gain;
+    const sw=(q.from||run.w).id,ss=stat(sw);ss.q++;if(perfect)ss.first++;ss.hints+=run.hintN;if(run.sol)ss.sols++;ss.last=today();
+    run.hTot+=run.hintN;if(run.sol)run.sTot++;
+    if(run.attempts>=2||run.sol){S.trouble.unshift({d:today(),w:sw,q:toText(q.html),bad:run.firstWrong||'— (od razu podejrzała rozwiązanie)',ok:okText(q),sol:run.sol,hints:run.hintN});S.trouble=S.trouble.slice(0,40)}
+    save();
     sOk();if(perfect)confetti();coinFly(gain,$('go'));
     fb('ok',`<span class="cheer">${pick(CHEERS)}</span>${gain?`+${gain} 💎`:'Następnym razem bez rozwiązania — dasz radę!'}<span class="sol">${q.solution}</span>`);
     $('go').textContent=run.i+1>=run.n?'Zobacz wynik 🏁':'Dalej ➜';
@@ -662,6 +994,8 @@ function check(){
     $('track').innerHTML=trackHtml();
   }else{
     run.attempts++;sBad();
+    if(run.attempts===1)run.firstWrong=ansText(q,run.vals,run.choice);
+    stat((q.from||run.w).id).wrong++;save();
     const msg=q.trap?q.trap(nums,run.choice):null;
     const which=(q.fields||[]).length>1&&fOk.some(Boolean)?' Zielone okienka są dobre — popraw czerwone.':'';
     fb('bad',`${msg||pick(OOPS)}${!msg?which:''}${run.attempts>=2&&!run.sol?'<button class="linkbtn" onclick="showSol()">👀 Pokaż rozwiązanie</button>':(!msg&&run.hintN===0?'<br><small>Kliknij 💡, jeśli potrzebujesz pomocy.</small>':'')}`);
@@ -695,18 +1029,21 @@ function finish(){
   const n=run.n,p=run.perfect;let st=1;if(p>=Math.ceil(n*.6))st=2;if(p>=n-1)st=3;
   const prev=S.stars[run.w.id]||0;if(st>prev)S.stars[run.w.id]=st;
   const bonus=st*10;S.coins+=bonus;
-  const today=new Date().toDateString(),yest=new Date(Date.now()-864e5).toDateString();
-  if(S.lastDay!==today){S.streak=S.lastDay===yest?S.streak+1:1;S.lastDay=today}
+  const sr=stat(run.w.id);sr.rounds++;sr.last=today();
+  S.log.unshift({d:today(),w:run.w.id,p,n,st,h:run.hTot,s:run.sTot});S.log=S.log.slice(0,40);
+  const td=new Date().toDateString(),yest=new Date(Date.now()-864e5).toDateString();
+  if(S.lastDay!==td){S.streak=S.lastDay===yest?S.streak+1:1;S.lastDay=td}
   save();sWin();confetti();setTimeout(()=>confetti(['⭐','🏆','💎']),900);
   const w=run.w;
   const title=st===3?'PERFEKCYJNIE! 🏆':st===2?'Świetna robota! 🎉':'Misja ukończona! 💪';
   const msg=st===3?'Chochliki ze sprawdzianu nie mają z tobą szans!':st===2?'Jeszcze jedna runda i zdobędziesz 3 gwiazdki!':'Każda runda czyni cię mocniejszą. Spróbuj jeszcze raz — zadania będą inne!';
-  const unlocked=w.id!=='boss'&&prev===0&&bossOpen()===3;
+  const unlocked=w.gen&&prev===0&&bossOpen(seasonOf(w))===3;
+  const s2new=w.gen&&seasonOf(w)===1&&prev===0&&bossOpen(1)===4;
   app.innerHTML=`<div class="res" style="--wc:${w.c1};--wc2:${w.c2}">
    <div style="font-size:60px">${w.emoji}</div><h2>${title}</h2>
    <div class="bigstars">${starStr(st)}</div>
    <div style="font-weight:800">Za pierwszym razem: ${p} z ${n} · zdobyte 💎 ${run.coins+bonus}</div>
-   <div class="card">🧚 ${msg}${unlocked?'<br><b>🔓 Odblokowałaś Bossa — Mega Obby czeka!</b>':''}${w.id==='boss'&&st>=2?'<br><b>👑 Korona Bossa czeka na ciebie w sklepie!</b>':''}</div>
+   <div class="card">🧚 ${msg}${unlocked?`<br><b>🔓 Odblokowałaś Bossa — ${BOSSNAME[seasonOf(w)===1?'boss':'boss2']} czeka!</b>`:''}${s2new?'<br><b>✨ Odblokowałaś SEZON 2!</b>':''}${!w.gen&&st>=2?`<br><b>${w.id==='boss'?'👑 Korona Bossa':'🏆 Puchar Mistrzyni'} czeka na ciebie w sklepie!</b>`:''}</div>
    <div class="row"><button class="bigbtn alt" onclick="home()">🗺️ Mapa</button><button class="bigbtn" onclick="startRun('${w.id}')">🔁 Jeszcze raz</button></div></div>`;
   run=null;scrollTo(0,0);
 }
