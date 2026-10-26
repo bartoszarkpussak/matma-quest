@@ -224,7 +224,8 @@ sup{font-size:.6em}
 .shint{font-size:14.5px;font-weight:800;color:#a16207;margin-top:4px}
 .shint:empty{display:none}
 .hearts{font-size:17px;min-width:72px;text-align:right;letter-spacing:-1px}
-.sboard{flex:1;min-height:0;display:flex;align-items:center;justify-content:center;position:relative;padding:8px 12px;touch-action:none}
+.sboard{flex:1;min-height:0;display:flex;align-items:center;justify-content:center;position:relative;padding:8px 12px;touch-action:none;overflow:hidden}
+.stext .sl{display:block;font-size:14px;color:var(--muted);font-weight:800}
 .sboard canvas{border-radius:14px;box-shadow:0 6px 0 rgba(0,0,0,.25);touch-action:none}
 .sover{position:absolute;left:28px;right:28px;top:50%;transform:translateY(-50%);background:rgba(20,10,40,.82);color:#fff;font-weight:800;padding:13px 14px;border-radius:14px;text-align:center;font-size:15px;pointer-events:none}
 .smsg{position:absolute;top:16px;left:50%;transform:translateX(-50%);background:#e11d48;color:#fff;font-weight:900;padding:8px 14px;border-radius:12px;white-space:nowrap;animation:pop .2s;pointer-events:none;font-size:15px}
@@ -1084,7 +1085,7 @@ function snakeTask(){
     return {t:`${fmt(A)} : ${fmt(B)} = ?`,a:q,h:`Zamroź ${k} ${zer(k)} ❄️ w obu liczbach: ${fmt(A/10**k)} : ${d}`}}
   if(t===5){const a=R(2,40),b=R(2,9),c=R(2,9);return {t:`${a} + ${b} · ${c} = ?`,a:a+b*c,h:`Najpierw mnożenie: ${b} · ${c} = ${b*c}`}}
   if(t===6){const a=R(2,15),b=R(2,15),c=R(2,6);return {t:`(${a} + ${b}) · ${c} = ?`,a:(a+b)*c,h:`Najpierw nawias: ${a} + ${b} = ${a+b}`}}
-  if(t===7){const b=R(4,9),q=R(3,11),r=R(1,b-1),N=b*q+r;return {t:`Reszta z dzielenia<br>${N} : ${b} = ${q} r ?`,a:r,h:`${b} · ${q} = ${b*q}, zostaje ${N} − ${b*q}`}}
+  if(t===7){const b=R(4,9),q=R(3,11),r=R(1,b-1),N=b*q+r;return {t:`<span class="sl">Reszta z dzielenia</span>${N} : ${b} = ${q} r ?`,a:r,h:`${b} · ${q} = ${b*q}, zostaje ${N} − ${b*q}`}}
   if(t===8){const b=R(3,9),x=R(3,12);return {t:`${BOX} · ${b} = ${b*x}`,a:x,h:`? = ${b*x} : ${b}`}}
   const [p,q]=pick([[4,25],[2,50],[5,20]]),x=R(2,9);return {t:`${p} · ${x} · ${q} = ?`,a:p*q*x,h:`Sprytnie: ${p} · ${q} = ${p*q}, potem · ${x}`};
 }
@@ -1121,9 +1122,7 @@ function snakeStart(fast){
   const COLS=11,cw=wrap.clientWidth-24,ch=wrap.clientHeight-16;
   const cell=Math.max(20,Math.floor(Math.min(cw/COLS,ch/10)));
   const ROWS=Math.max(10,Math.min(17,Math.floor(ch/cell)));
-  const dpr=window.devicePixelRatio||1;
-  cv.width=COLS*cell*dpr;cv.height=ROWS*cell*dpr;cv.style.width=COLS*cell+'px';cv.style.height=ROWS*cell+'px';
-  const ctx=cv.getContext('2d');ctx.scale(dpr,dpr);
+  const ctx=cv.getContext('2d');
   const sy=Math.floor(ROWS/2);
   const g={fast,tasks,i:0,COLS,ROWS,cell,ctx,body:[{x:3,y:sy},{x:2,y:sy},{x:1,y:sy}],dir:[1,0],queue:[],grow:0,hearts:3,tiles:[],
     started:false,paused:false,over:false,freeze:0,acc:0,last:0,step:fast?175:280,pops:[],t0:0,
@@ -1136,8 +1135,14 @@ function snakeStart(fast){
     do{x=R(0,COLS-1);y=R(0,ROWS-1);k++}while(busy(x,y)||(k<300&&near(x,y)));
     g.tiles.push({x,y,v:t.a,flash:0,col:TILECOLS[g.tiles.length%TILECOLS.length]});
   }
+  // plansza dopasowuje się, gdy karta zadania urośnie (dwie linijki, podpowiedź) albo zmieni się ekran
+  const fit=()=>{const w=wrap.clientWidth-24,h=wrap.clientHeight-16;if(w<50||h<50)return;
+    const c=Math.max(14,Math.floor(Math.min(w/COLS,h/ROWS)));if(c===g.fitC)return;g.fitC=c;g.cell=c;
+    const dpr=window.devicePixelRatio||1;cv.width=COLS*c*dpr;cv.height=ROWS*c*dpr;cv.style.width=COLS*c+'px';cv.style.height=ROWS*c+'px';
+    ctx.setTransform(dpr,0,0,dpr,0,0)};
   SN=g;
-  snakeHearts();snakeShowTask(g);
+  snakeHearts();snakeShowTask(g);fit();
+  if(window.ResizeObserver)new ResizeObserver(fit).observe(wrap);else addEventListener('resize',fit);
   let sx=0,sy2=0;
   wrap.addEventListener('touchstart',e=>{const t=e.touches[0];sx=t.clientX;sy2=t.clientY},{passive:true});
   wrap.addEventListener('touchmove',e=>e.preventDefault(),{passive:false});
