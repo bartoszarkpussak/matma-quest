@@ -215,6 +215,25 @@ sup{font-size:.6em}
 .tro-h{font-size:12px;font-weight:800;color:var(--muted)}
 .tro-q{font-weight:700;margin:4px 0;font-size:14.5px}
 .tro-a{font-size:14px;font-weight:700}.tro-a .x{color:var(--bad)}.tro-a .v{color:var(--ok)}
+.snakecard{display:flex;align-items:center;gap:14px;width:100%;margin-top:14px}
+.snakecard .we{font-size:46px}
+.snake .stask{margin:4px 12px 0;padding:10px 14px;text-align:center}
+.sq{font-size:12px;font-weight:900;color:var(--muted);text-transform:uppercase;letter-spacing:.4px}
+.stext{font-size:28px;font-weight:900;color:#15803d;line-height:1.2;margin-top:2px}
+.stext.pop{animation:pop .35s}
+.shint{font-size:14.5px;font-weight:800;color:#a16207;margin-top:4px}
+.shint:empty{display:none}
+.hearts{font-size:17px;min-width:72px;text-align:right;letter-spacing:-1px}
+.sboard{flex:1;min-height:0;display:flex;align-items:center;justify-content:center;position:relative;padding:8px 12px;touch-action:none}
+.sboard canvas{border-radius:14px;box-shadow:0 6px 0 rgba(0,0,0,.25);touch-action:none}
+.sover{position:absolute;left:28px;right:28px;top:50%;transform:translateY(-50%);background:rgba(20,10,40,.82);color:#fff;font-weight:800;padding:13px 14px;border-radius:14px;text-align:center;font-size:15px;pointer-events:none}
+.smsg{position:absolute;top:16px;left:50%;transform:translateX(-50%);background:#e11d48;color:#fff;font-weight:900;padding:8px 14px;border-radius:12px;white-space:nowrap;animation:pop .2s;pointer-events:none;font-size:15px}
+.smsg.ok{background:#16a34a}
+.dpad{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;padding:4px 12px calc(env(safe-area-inset-bottom) + 10px)}
+.dk{border:0;border-radius:16px;height:54px;font-size:24px;font-weight:900;background:rgba(255,255,255,.94);color:var(--ink);box-shadow:0 5px 0 rgba(0,0,0,.25);touch-action:manipulation}
+.dk:active{transform:translateY(3px);box-shadow:0 2px 0 rgba(0,0,0,.25)}
+.dk.fn{background:#fff1b8;font-size:21px}
+.row2{display:flex;gap:10px}.row2 .bigbtn{flex:1}
 </style>
 </head>
 <body>
@@ -765,7 +784,7 @@ WORLDS.push(
    <div class="rule">⭐ Czytaj pytania dwa razy — w tym sezonie liczy się spryt!</div>`}
 );
 
-const W=id=>WORLDS.find(w=>w.id===id);
+const W=id=>id==='snake'?SNAKE_W:WORLDS.find(w=>w.id===id);
 const seasonOf=w=>w.season||1;
 
 /* ================= SKLEP ================= */
@@ -808,13 +827,14 @@ function bossOpen(se){return WORLDS.filter(w=>seasonOf(w)===se&&w.gen&&(S.stars[
 const s2Open=()=>bossOpen(1)>=4;
 function setSeason(n){if(n===2&&!s2Open()){sBad();toast(`🔒 Zdobądź gwiazdkę w 4 światach Sezonu 1 (masz ${bossOpen(1)}/4)`);return}S.season=n;save();sTap();home()}
 function home(){
-  run=null;
+  run=null;SN=null;
   const se=S.season===2&&s2Open()?2:1;
   const greet=se===2?pick(GREETS2):(s2Open()&&!WORLDS.some(w=>seasonOf(w)===2&&S.stars[w.id])?'Nowość! Odblokowałaś <b>Sezon 2</b> — 6 nowych światów czeka! Kliknij zakładkę powyżej ✨':pick(GREETS));
   app.innerHTML=`<div class="home">${topBar()}
    <div class="logo"><h1>Matma <span>Quest</span></h1><p>Wybierz świat i zbieraj gwiazdki!</p>${S.streak>1?`<span class="streak">🔥 Seria: ${S.streak} dni z rzędu</span>`:''}</div>
    <div class="tabs"><button class="tab ${se===1?'on':''}" onclick="setSeason(1)">Sezon 1</button><button class="tab ${se===2?'on':''}" onclick="setSeason(2)">Sezon 2 ${s2Open()?'<span class="new">NOWY</span>':'🔒'}</button></div>
    <div class="bubble"><div class="m">🧚</div><div>${greet}</div></div>
+   <button class="wcard snakecard" style="--wc:#22c55e;--wc2:#15803d" onclick="snakeIntro()"><div class="we">🐍</div><div><div class="wn">Matma Wąż <span class="new">BONUS</span></div><div class="wt">Policz zadanie i zjedz właściwy wynik!</div><div class="wst">${starStr(S.stars.snake||0)}</div></div></button>
    <div class="worlds">${WORLDS.filter(w=>seasonOf(w)===se).map(w=>{
      const lock=!w.gen&&bossOpen(se)<3;
      return `<button class="wcard ${!w.gen?'boss':''} ${lock?'locked':''}" style="--wc:${w.c1};--wc2:${w.c2}" onclick="openWorld('${w.id}')">
@@ -884,6 +904,7 @@ function parent(){
    </div>
    <h3 class="ph">Sezon 1 — błędy ze sprawdzianu</h3><div class="card tblwrap">${table(1)}</div>
    <h3 class="ph">Sezon 2 — nowe umiejętności</h3><div class="card tblwrap">${table(2)}</div>
+   <h3 class="ph">Gra bonusowa</h3><div class="card tblwrap"><table class="ptbl"><tr><th>Gra</th><th>Zad.</th><th>Dobrze</th><th>💡/zad.</th><th>Rozw.</th><th>Ostatnio</th></tr>${row(SNAKE_W)}</table></div>
    <p class="pnote">„Dobrze” = poprawnie za pierwszym podejściem, bez podglądania rozwiązania. Kolory: zielony ≥ 80%, żółty 60–79%, czerwony &lt; 60%.</p>
    <h3 class="ph">Zadania, które sprawiły kłopot</h3>
    <div class="card">${S.trouble.length?S.trouble.slice(0,25).map(t=>{const w=W(t.w)||{emoji:'',name:''};
@@ -1047,6 +1068,217 @@ function finish(){
    <div class="row"><button class="bigbtn alt" onclick="home()">🗺️ Mapa</button><button class="bigbtn" onclick="startRun('${w.id}')">🔁 Jeszcze raz</button></div></div>`;
   run=null;scrollTo(0,0);
 }
+
+/* ================= GRA BONUSOWA: MATMA WĄŻ ================= */
+const SNAKE_W={id:'snake',emoji:'🐍',name:'Matma Wąż',c1:'#22c55e',c2:'#15803d'};
+const TILECOLS=['#fde68a','#bfdbfe','#fbcfe8','#ddd6fe','#fed7aa','#a7f3d0','#fecaca','#c7d2fe'];
+let SN=null;
+const mmss=s=>`${Math.floor(s/60)}:${String(s%60).padStart(2,'0')}`;
+
+function snakeTask(){
+  const t=R(1,9);
+  if(t===1){const a=R(3,12),b=R(3,12);return {t:`${a} · ${b} = ?`,a:a*b,h:`${a} · ${b} = ${a} · ${b-1} + ${a} = ${a*(b-1)} + ${a}`}}
+  if(t===2){const a=R(2,20);return {t:`${P(a,2)} = ?`,a:a*a,h:`${P(a,2)} = ${a} · ${a} (nie ${a} · 2!)`}}
+  if(t===3){const a=R(2,9);return {t:`${P(a,3)} = ?`,a:a**3,h:`${P(a,3)} = ${a} · ${a} · ${a} = ${a*a} · ${a}`}}
+  if(t===4){const d=R(2,9),e=R(2,9),k=R(1,2),m=R(0,1),B=d*10**k,q=e*10**m,A=B*q;
+    return {t:`${fmt(A)} : ${fmt(B)} = ?`,a:q,h:`Zamroź ${k} ${zer(k)} ❄️ w obu liczbach: ${fmt(A/10**k)} : ${d}`}}
+  if(t===5){const a=R(2,40),b=R(2,9),c=R(2,9);return {t:`${a} + ${b} · ${c} = ?`,a:a+b*c,h:`Najpierw mnożenie: ${b} · ${c} = ${b*c}`}}
+  if(t===6){const a=R(2,15),b=R(2,15),c=R(2,6);return {t:`(${a} + ${b}) · ${c} = ?`,a:(a+b)*c,h:`Najpierw nawias: ${a} + ${b} = ${a+b}`}}
+  if(t===7){const b=R(4,9),q=R(3,11),r=R(1,b-1),N=b*q+r;return {t:`Reszta z dzielenia<br>${N} : ${b} = ${q} r ?`,a:r,h:`${b} · ${q} = ${b*q}, zostaje ${N} − ${b*q}`}}
+  if(t===8){const b=R(3,9),x=R(3,12);return {t:`${BOX} · ${b} = ${b*x}`,a:x,h:`? = ${b*x} : ${b}`}}
+  const [p,q]=pick([[4,25],[2,50],[5,20]]),x=R(2,9);return {t:`${p} · ${x} · ${q} = ?`,a:p*q*x,h:`Sprytnie: ${p} · ${q} = ${p*q}, potem · ${x}`};
+}
+
+function snakeIntro(){
+  SN=null;sTap();
+  const b=S.snakeBest||{};
+  app.innerHTML=`<div class="lesson" style="--wc:${SNAKE_W.c1};--wc2:${SNAKE_W.c2}"><button class="back" onclick="home()">← Mapa</button>
+   <div class="lhead"><div class="we">🐍</div><h2>Matma Wąż</h2><p>Gra bonusowa · 8 zadań</p></div>
+   <div class="card lcard"><h3>Jak grać? 🎮</h3>
+    1️⃣ Na górze pojawia się zadanie — policz je w głowie.<br>
+    2️⃣ Na planszy leżą liczby. Poprowadź węża do <b>właściwego wyniku</b> i zjedz go!<br>
+    3️⃣ Pojawi się nowe zadanie — szukaj wyniku wśród pozostałych liczb.<br>
+    4️⃣ Zbierz wszystkie liczby, żeby wygrać 🏆
+    <div class="rule">❤️ Masz 3 serca. Tracisz serce, gdy zjesz złą liczbę albo ugryziesz własny ogon.</div>
+    <div class="ex" style="font-size:16px">👆 Przesuń palcem po planszy albo stukaj w strzałki.<br>✨ Ściany są magiczne — wąż wychodzi drugą stroną!<br>💡 Nie wiesz, ile to jest? Stuknij żarówkę.</div>
+    ${b.s||b.f?`<div class="rule">🏆 Twoje rekordy: ${b.s?`🐢 ${mmss(b.s)}`:''} ${b.f?`&nbsp; 🐇 ${mmss(b.f)}`:''}</div>`:''}</div>
+   <div class="row2"><button class="bigbtn alt" onclick="snakeStart(0)">🐢 Spokojnie</button><button class="bigbtn" onclick="snakeStart(1)">🐇 Szybko</button></div></div>`;
+  scrollTo(0,0);
+}
+
+function snakeStart(fast){
+  const tasks=[],used=new Set();let n=0;
+  while(tasks.length<8&&n++<1000){const t=snakeTask();if(!used.has(t.a)){used.add(t.a);tasks.push(t)}}
+  app.innerHTML=`<div class="play snake" style="--wc:${SNAKE_W.c1};--wc2:${SNAKE_W.c2}">
+   <div class="ptop"><button class="iconbtn" onclick="snakeQuit()">✕</button><div class="ptitle">🐍 Matma Wąż</div><div class="hearts" id="hearts"></div></div>
+   <div class="card stask"><div class="sq" id="sq"></div><div class="stext" id="stext"></div><div class="shint" id="shint"></div></div>
+   <div class="sboard" id="sboard"><canvas id="cv"></canvas><div class="sover" id="sover">Przesuń palcem albo stuknij strzałkę, żeby ruszyć ▶</div></div>
+   <div class="dpad">
+    <button class="dk fn" onclick="snakeHint()">💡</button><button class="dk" onclick="snakeDir(0,-1)">▲</button><button class="dk fn" id="pz" onclick="snakePause()">⏸</button>
+    <button class="dk" onclick="snakeDir(-1,0)">◀</button><button class="dk" onclick="snakeDir(0,1)">▼</button><button class="dk" onclick="snakeDir(1,0)">▶</button>
+   </div></div>`;
+  const wrap=$('sboard'),cv=$('cv');
+  const COLS=11,cw=wrap.clientWidth-24,ch=wrap.clientHeight-16;
+  const cell=Math.max(20,Math.floor(Math.min(cw/COLS,ch/10)));
+  const ROWS=Math.max(10,Math.min(17,Math.floor(ch/cell)));
+  const dpr=window.devicePixelRatio||1;
+  cv.width=COLS*cell*dpr;cv.height=ROWS*cell*dpr;cv.style.width=COLS*cell+'px';cv.style.height=ROWS*cell+'px';
+  const ctx=cv.getContext('2d');ctx.scale(dpr,dpr);
+  const sy=Math.floor(ROWS/2);
+  const g={fast,tasks,i:0,COLS,ROWS,cell,ctx,body:[{x:3,y:sy},{x:2,y:sy},{x:1,y:sy}],dir:[1,0],queue:[],grow:0,hearts:3,tiles:[],
+    started:false,paused:false,over:false,freeze:0,acc:0,last:0,step:fast?175:280,pops:[],t0:0,
+    wrongThis:false,hintsThis:0,hintsTot:0,firstOk:0};
+  // rozmieszczenie liczb: nie na wężu, nie w rzędzie startowym, z odstępem między sobą
+  const busy=(x,y)=>(y===sy&&x<8)||g.tiles.some(o=>o.x===x&&o.y===y);
+  const near=(x,y)=>g.tiles.some(o=>Math.abs(o.x-x)<=1&&Math.abs(o.y-y)<=1);
+  for(const t of tasks){
+    let x,y,k=0;
+    do{x=R(0,COLS-1);y=R(0,ROWS-1);k++}while(busy(x,y)||(k<300&&near(x,y)));
+    g.tiles.push({x,y,v:t.a,flash:0,col:TILECOLS[g.tiles.length%TILECOLS.length]});
+  }
+  SN=g;
+  snakeHearts();snakeShowTask(g);
+  let sx=0,sy2=0;
+  wrap.addEventListener('touchstart',e=>{const t=e.touches[0];sx=t.clientX;sy2=t.clientY},{passive:true});
+  wrap.addEventListener('touchmove',e=>e.preventDefault(),{passive:false});
+  wrap.addEventListener('touchend',e=>{const t=e.changedTouches[0],dx=t.clientX-sx,dy=t.clientY-sy2;
+    if(Math.max(Math.abs(dx),Math.abs(dy))<18)return;
+    Math.abs(dx)>Math.abs(dy)?snakeDir(Math.sign(dx),0):snakeDir(0,Math.sign(dy))});
+  requestAnimationFrame(ts=>snakeLoop(g,ts));
+}
+function snakeHearts(){const g=SN;if(g)$('hearts').textContent='❤️'.repeat(g.hearts)+'🤍'.repeat(3-g.hearts)}
+function snakeShowTask(g){
+  $('sq').textContent=`Zadanie ${g.i+1} z ${g.tasks.length} · zostało liczb: ${g.tiles.length}`;
+  const el=$('stext');el.innerHTML=g.tasks[g.i].t;el.classList.remove('pop');void el.offsetWidth;el.classList.add('pop');
+  $('shint').innerHTML='';
+}
+function snakeDir(dx,dy){
+  const g=SN;if(!g||g.over)return;
+  const last=g.queue.length?g.queue[g.queue.length-1]:g.dir;
+  const reverse=last[0]===-dx&&last[1]===-dy;
+  if(!reverse&&!(last[0]===dx&&last[1]===dy)&&g.queue.length<3)g.queue.push([dx,dy]);
+  if(!g.started){g.started=true;g.t0=performance.now();$('sover').style.display='none'}
+  if(g.paused)snakePause();
+}
+function snakePause(){
+  const g=SN;if(!g||g.over||!g.started)return;
+  g.paused=!g.paused;$('pz').textContent=g.paused?'▶':'⏸';
+  const o=$('sover');o.style.display=g.paused?'block':'none';o.textContent='Pauza ⏸ — stuknij strzałkę albo ▶, żeby grać dalej';
+}
+function snakeHint(){
+  const g=SN;if(!g||g.over)return;
+  const el=$('shint');if(el.innerHTML)return;
+  el.innerHTML='💡 '+g.tasks[g.i].h;g.hintsThis++;g.hintsTot++;tone([880,1100],.07);
+}
+function snakeQuit(){
+  const g=SN;if(g&&g.started&&!g.over){const was=g.paused;g.paused=true;if(!confirm('Wyjść z gry? Ta runda przepadnie.')){g.paused=was;return}}
+  SN=null;home();
+}
+function snakeLoop(g,ts){
+  if(SN!==g)return;
+  const dt=Math.min(ts-(g.last||ts),100);g.last=ts;
+  if(g.started&&!g.paused&&!g.over&&ts>g.freeze){g.acc+=dt;while(g.acc>=g.step&&!g.over){g.acc-=g.step;snakeStep(g,ts)}}
+  snakeDraw(g,ts);
+  requestAnimationFrame(t=>snakeLoop(g,t));
+}
+function snakeMsg(txt,bad){
+  document.querySelectorAll('.smsg').forEach(m=>m.remove());
+  const m=document.createElement('div');m.className='smsg'+(bad?'':' ok');m.innerHTML=txt;$('sboard').appendChild(m);setTimeout(()=>m.remove(),1400);
+}
+function snakeLose(g,ts,why){
+  g.hearts--;snakeHearts();sBad();g.freeze=ts+800;g.queue=[];
+  snakeMsg(why+(g.hearts?` −1 ❤️`:''),true);
+  if(g.hearts<=0){g.over=true;setTimeout(()=>snakeEnd(g,false),1000)}
+}
+function snakeStep(g,ts){
+  if(g.queue.length)g.dir=g.queue.shift();
+  const h=g.body[0],nx=(h.x+g.dir[0]+g.COLS)%g.COLS,ny=(h.y+g.dir[1]+g.ROWS)%g.ROWS;
+  const idx=g.body.findIndex(s=>s.x===nx&&s.y===ny);
+  if(idx>=0&&!(idx===g.body.length-1&&g.grow===0)){
+    g.body=g.body.slice(0,Math.max(idx,2));
+    snakeLose(g,ts,'Ugryzłaś ogon! 🐍');if(g.over)return;
+  }
+  g.body.unshift({x:nx,y:ny});
+  const ti=g.tiles.findIndex(t=>t.x===nx&&t.y===ny);
+  if(ti>=0){
+    const t=g.tiles[ti],task=g.tasks[g.i];
+    if(t.v===task.a){
+      g.tiles.splice(ti,1);g.grow+=2;
+      const s=stat('snake');s.q++;if(!g.wrongThis){s.first++;g.firstOk++}s.hints+=g.hintsThis;s.last=today();
+      const gain=g.wrongThis?3:5;S.coins+=gain;S.solved++;save();
+      sOk();g.pops.push({x:nx,y:ny,txt:`+${gain} 💎`,t:ts});
+      g.i++;g.wrongThis=false;g.hintsThis=0;
+      if(g.i>=g.tasks.length){g.over=true;setTimeout(()=>snakeEnd(g,true),600);return}
+      snakeMsg(pick(['Mniam! 😋','Mega! 🔥','Brawo! ⭐','Petarda! 💥','Kozacko! 😎']));
+      snakeShowTask(g);
+    }else{
+      t.flash=ts;
+      if(!g.wrongThis){S.trouble.unshift({d:today(),w:'snake',q:toText(task.t),bad:fmt(t.v),ok:fmt(task.a),sol:false,hints:g.hintsThis});S.trouble=S.trouble.slice(0,40)}
+      g.wrongThis=true;stat('snake').wrong++;save();
+      snakeLose(g,ts,`${fmt(t.v)} to nie ten wynik!`);
+      if(g.over)return;
+    }
+  }
+  if(g.grow>0)g.grow--;else g.body.pop();
+}
+function rr(ctx,x,y,w,h,r){ctx.beginPath();ctx.moveTo(x+r,y);ctx.arcTo(x+w,y,x+w,y+h,r);ctx.arcTo(x+w,y+h,x,y+h,r);ctx.arcTo(x,y+h,x,y,r);ctx.arcTo(x,y,x+w,y,r);ctx.closePath()}
+function snakeDraw(g,ts){
+  const {ctx,cell:c,COLS,ROWS}=g;
+  ctx.fillStyle='#ecfdf5';ctx.fillRect(0,0,COLS*c,ROWS*c);
+  ctx.fillStyle='#d1fae5';
+  for(let y=0;y<ROWS;y++)for(let x=0;x<COLS;x++)if((x+y)%2)ctx.fillRect(x*c,y*c,c,c);
+  // liczby
+  ctx.textAlign='center';ctx.textBaseline='middle';
+  for(const t of g.tiles){
+    const age=ts-t.flash,fl=t.flash&&age<700,ox=fl?Math.sin(age/25)*4*(1-age/700):0;
+    ctx.fillStyle=fl?'#fb7185':t.col;rr(ctx,t.x*c+2+ox,t.y*c+2,c-4,c-4,c*.28);ctx.fill();
+    ctx.lineWidth=2;ctx.strokeStyle='rgba(30,27,75,.18)';ctx.stroke();
+    const s=String(t.v),fs=s.length>=3?c*.36:s.length===2?c*.46:c*.54;
+    ctx.fillStyle='#1e1b4b';ctx.font=`900 ${fs}px ui-rounded,"SF Pro Rounded",system-ui,sans-serif`;ctx.fillText(s,t.x*c+c/2+ox,t.y*c+c/2+1);
+  }
+  // wąż
+  const n=g.body.length;
+  for(let i=n-1;i>=0;i--){
+    const s=g.body[i],k=n>1?i/(n-1):0,pad=i===0?1:2+k*2;
+    ctx.fillStyle=i===0?'#15803d':`hsl(${142-k*10},${70-k*15}%,${38+k*25}%)`;
+    rr(ctx,s.x*c+pad,s.y*c+pad,c-2*pad,c-2*pad,c*.35);ctx.fill();
+  }
+  // oczy
+  const h=g.body[0],[dx,dy]=g.dir,cx=h.x*c+c/2,cy=h.y*c+c/2;
+  for(const side of [-1,1]){
+    const ex=cx+dx*c*.15+(dy?side*c*.2:0),ey=cy+dy*c*.15+(dx?side*c*.2:0);
+    ctx.fillStyle='#fff';ctx.beginPath();ctx.arc(ex,ey,c*.14,0,7);ctx.fill();
+    ctx.fillStyle='#111';ctx.beginPath();ctx.arc(ex+dx*c*.05,ey+dy*c*.05,c*.07,0,7);ctx.fill();
+  }
+  // „+5 💎”
+  g.pops=g.pops.filter(p=>ts-p.t<900);
+  for(const p of g.pops){const a=(ts-p.t)/900;ctx.globalAlpha=1-a;ctx.fillStyle='#15803d';ctx.font=`900 ${c*.5}px ui-rounded,system-ui,sans-serif`;
+    ctx.fillText(p.txt,p.x*c+c/2,p.y*c+c/2-a*c*1.2);ctx.globalAlpha=1}
+}
+function snakeEnd(g,won){
+  if(SN!==g)return;
+  const secs=Math.round((performance.now()-g.t0)/1000),st=won?g.hearts:0;
+  const prev=S.stars.snake||0;if(st>prev)S.stars.snake=st;
+  const bonus=st*10;S.coins+=bonus;
+  const s=stat('snake');s.rounds++;s.last=today();
+  S.log.unshift({d:today(),w:'snake',p:g.firstOk,n:g.tasks.length,st,h:g.hintsTot,s:0});S.log=S.log.slice(0,40);
+  let rec=false;
+  if(won){S.snakeBest=S.snakeBest||{};const k=g.fast?'f':'s';if(!S.snakeBest[k]||secs<S.snakeBest[k]){rec=true;S.snakeBest[k]=secs}}
+  save();SN=null;
+  if(won){sWin();confetti(['🐍','⭐','💎','🍏']);setTimeout(()=>confetti(['⭐','🏆']),900)}
+  app.innerHTML=`<div class="res" style="--wc:${SNAKE_W.c1};--wc2:${SNAKE_W.c2}">
+   <div style="font-size:60px">${won?'🐍':'😵'}</div><h2>${won?(st===3?'Wąż-mistrzyni! 🏆':'Wszystkie zebrane! 🎉'):'Oof! Koniec serc'}</h2>
+   ${won?`<div class="bigstars">${starStr(st)}</div>`:''}
+   <div style="font-weight:800">Zebrane liczby: ${g.i} z ${g.tasks.length}${won?` · czas ${mmss(secs)}`:''} · bonus 💎 ${bonus}</div>
+   <div class="card">🧚 ${won?(rec?`Nowy rekord (${g.fast?'🐇 szybko':'🐢 spokojnie'}): <b>${mmss(secs)}</b>! `:'')+(st===3?'Ani jednej pomyłki — perfekcyjnie!':'Spróbuj jeszcze raz bez utraty serca, żeby zdobyć 3 gwiazdki!'):'Nic się nie stało! Liczby i zadania będą nowe — spróbuj jeszcze raz 💪'}</div>
+   <div class="row"><button class="bigbtn alt" onclick="home()">🗺️ Mapa</button><button class="bigbtn" onclick="snakeStart(${g.fast})">🔁 Jeszcze raz</button></div></div>`;
+  scrollTo(0,0);
+}
+document.addEventListener('keydown',e=>{
+  if(!SN)return;
+  const m={ArrowUp:[0,-1],ArrowDown:[0,1],ArrowLeft:[-1,0],ArrowRight:[1,0],w:[0,-1],s:[0,1],a:[-1,0],d:[1,0]}[e.key];
+  if(m){e.preventDefault();snakeDir(...m)}else if(e.key===' '){e.preventDefault();snakePause()}
+});
 
 /* ================= WIDŻETY ================= */
 function wZeros(wd){
