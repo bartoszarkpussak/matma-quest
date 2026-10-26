@@ -1329,6 +1329,25 @@ function wPairs(wd){
 
 const app=$('app');
 home();
+
+/* ================= AUTOMATYCZNA AKTUALIZACJA ================= */
+// Telefon potrafi trzymać starą wersję w pamięci. Sprawdzamy, czy na serwerze jest nowsza, i przeładowujemy (postępy zostają).
+const APP_VERSION='2026-10-26c';
+let updChecking=false,lastChk=0;
+async function checkUpdate(){
+  if(updChecking||location.protocol==='file:'||Date.now()-lastChk<30000)return;updChecking=true;lastChk=Date.now();
+  try{
+    const r=await fetch(location.pathname+'?check='+Date.now(),{cache:'no-store'});
+    const m=(await r.text()).match(/APP_VERSION='([^']+)'/);
+    if(m&&m[1]!==APP_VERSION){
+      if(run||SN){toast('✨ Jest nowa wersja gry — wczyta się po powrocie na mapę');return}
+      location.replace(location.pathname+'?v='+encodeURIComponent(m[1]));
+    }
+  }catch(e){}finally{updChecking=false}
+}
+checkUpdate();
+document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')checkUpdate()});
+const _home=home;home=function(){_home();checkUpdate()};
 </script>
 </body>
 </html>
